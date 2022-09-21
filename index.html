@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>asemic</title>
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="stylesheet" href="css/asemic.css">
+    <script src="js/lib/vue.global.js" charset="utf-8"></script>
+    <script src="js/lib/ace.js" charset="utf-8"></script>
+    <script src="js/export.js" charset="utf-8"></script>
+
+    <script src="js/default.js" charset="utf-8"></script>
+    <script src="js/vector.js" charset="utf-8"></script>
+    <script src="js/errors.js" charset="utf-8"></script>
+    <script src="js/entity.js" charset="utf-8"></script>
+    <script src="js/scene.js" charset="utf-8"></script>
+    <script src="js/game.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav>
+        <button
+          v-for="mode in ['code', 'test', 'save']"
+          :disabled="currentMode==mode"
+          @click="currentMode=mode"
+        >{{mode}}</button>
+      </nav>
+      <div v-if="currentMode=='code'" id="code">
+        <div
+          v-if="errorMessage"
+          class="error"
+        >{{errorMessage}}</div>
+        <editor
+          :code="code"
+          @changecode="changecode"
+        ></editor>
+      </div>
+      <div v-if="currentMode=='test'" id="test">
+        <game
+          :code=code
+          @error=error
+        ></game>
+      </div>
+      <div v-if="currentMode=='save'" id="save">
+        <button @click=exportStandAlone>export game</button>
+        <button @click=exportXML>export xml</button>
+      </div>
+    </div>
+
+    <script src="js/editor.js" charset="utf-8"></script>
+  </body>
+</html>

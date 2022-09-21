@@ -1,0 +1,51 @@
+<game
+  title="Un test"
+  player="@"
+  goal="*"
+  deadly="^"
+>
+<scene>
+Un caractère représente le 'joueur' et un autre
+caractère représente le 'but'
+
+
+
+
+  @                                         *
+</scene>
+<scene>
+
+  <!--Commentaire -->
+
+  <![CDATA[
+Un caractère est 'mortel'.
+
+<!--Commentaire -->
+
+      <<<<<<<<<<<
+
+        <<<scene> </scene>
+
+
+
+
+ @                    ^                   *
+]]>
+
+
+</scene>
+<scene>
+
+Tous les autres caractères sont 'solides'
+<!-- Commentaire -->
+
+
+ @                             *
+
+=#+o
+                              "{-
+  o6#/$=§Qmn     éhHf78-+°(
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</scene>
+</game>

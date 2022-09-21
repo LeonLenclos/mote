@@ -1,0 +1,50 @@
+<game
+  title="Un test"
+
+  goal="*"
+  deadly="^"
+>
+<scene
+title="blob"
+player="oO0"
+goal="*"
+>
+
+
+
+
+
+                          ██
+                          ██
+                          ██
+                          ██
+          @               ██
+                          ██
+                          ██
+                          ██
+                          ██
+                          ██
+                          ██
+                          ██
+                          ██
+                          ██
+    000 o   o  OO o O     ██         *
+   o 0 o 0 OO o O0 o      ██             *  *  *
+  O OO oo OOO00O O o O    ██        *   *    *  *
+    000 o   o  OO o O     ██           * ** *  *
+█████████████████████████████████████████████████████
+</scene>
+<scene
+title="blob"
+player="oO0"
+goal="*"
+jump_force="2"
+>
+
+Cool
+
+
+</scene>
+
+
+</game>

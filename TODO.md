@@ -1,0 +1,3 @@
+- Faire que <game> fonctionne sans <scene>
+- Option pour afficher/masquer les characteres invisibles
+- animer le texte qui apparait disparait

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{title}</title>
+    <style>
+    body,html{
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    </style>
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="stylesheet" href="css/asemic.css">
+    <script src="js/vector.js" charset="utf-8"></script>
+    <script src="js/errors.js" charset="utf-8"></script>
+    <script src="js/entity.js" charset="utf-8"></script>
+    <script src="js/scene.js" charset="utf-8"></script>
+    <script src="js/default.js" charset="utf-8"></script>
+    <script src="js/game.js" charset="utf-8"></script>
+    <script>
+    GAMEDATA=`{gamedata}`;
+    window.addEventListener('load', function(event){
+      let game = Game.fromText(GAMEDATA);
+      let container = document.getElementById('asemic');
+      game.init(container);
+    });
+  </script>
+  </head>
+  <body>
+    <div id="asemic">
+    </div>
+  </body>
+</html>
