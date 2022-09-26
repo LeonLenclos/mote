@@ -50,7 +50,7 @@ app.component('editor', {
 
 app.component('game', {
   props:['code'],
-  template:'<div id="asemic" ref="game"></div>',
+  template:'<div id="asemic"></div>',
   mounted() {
     try {
       this.game = Game.fromText(this.code);
@@ -58,7 +58,8 @@ app.component('game', {
       this.$emit('error', e);
       return;
     }
-    this.game.init(this.$refs.game);
+
+    this.game.init(this.$el);
   },
   unmounted() {
     if(this.game){
