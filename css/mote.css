@@ -1,5 +1,5 @@
 
-#asemic {
+#mote {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +10,7 @@
 }
 
 
-#asemic {
+#mote {
   --bg:#222;
   --bg2:#000;
   --fg:#eee;
@@ -19,7 +19,7 @@
   background: var(--bg2);
 }
 
-#asemic #game {
+#mote #game {
   background: var(--bg);
   color: var(--fg);
   border:1px solid var(--fg2);
@@ -27,41 +27,41 @@
   font-size: 15px;
 }
 
-#asemic #game header{
+#mote #game header{
   border-bottom: 1px solid var(--fg2);
   display: flex;
   flex-direction:row;
 }
-#asemic #game header * {
+#mote #game header * {
     padding: 2px;
 }
 
-#asemic #game header #title {
+#mote #game header #title {
   flex-grow: 1;
 }
 
-#asemic #game header #author {
+#mote #game header #author {
     border-left: 1px solid var(--fg2);
 }
-#asemic #game header #author:before {
+#mote #game header #author:before {
   content:'by ';
   color: var(--fg2);
 }
 
-#asemic #game main {
+#mote #game main {
     background: var(--bg2);
 
   display: flex;
   justify-content:center;
 
 }
-#asemic #scene{
+#mote #scene{
   background: var(--bg);
   padding:2px;
   margin:0;
 }
 
-#asemic #scene span{
+#mote #scene span{
   display: inline-block;
   width:9px;
   height: 18px;

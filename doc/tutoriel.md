@@ -11,7 +11,7 @@ Mote est un moteur de jeu en mode texte.
 
 ## L'éditeur
 
-L'éditeur se trouve actuellement à cette adresse : https://leonlenclos.github.io/asemic
+L'éditeur se trouve actuellement à cette adresse : https://leonlenclos.github.io/mote
 
 L'éditeur dispose de trois modes qui sont accessibles en cliquant sur les boutons de la barre du haut :
 

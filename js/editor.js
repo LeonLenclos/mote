@@ -23,10 +23,10 @@ const app = createApp({
       this.errorMessage = e;
     },
     exportStandAlone(){
-      exportStandAlone(this.code, 'asemic')
+      exportStandAlone(this.code, 'mote')
     },
     exportXML(){
-      exportXML(this.code, 'asemic')
+      exportXML(this.code, 'mote')
     }
   }
 })
@@ -87,7 +87,7 @@ app.component('editor', {
 
 app.component('game', {
   props:['code'],
-  template:'<div id="asemic"></div>',
+  template:'<div id="mote"></div>',
   mounted() {
     try {
       this.game = Game.fromText(this.code);
