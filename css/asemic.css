@@ -1,22 +1,4 @@
 
-@font-face {
-	font-family: 'Iosevka Fixed SS08 Web';
-	font-display: swap;
-	font-weight: 400;
-	font-stretch: expanded;
-	font-style: normal;
-	src: url('font/ttf/iosevka-fixed-ss08-extended.ttf') format('truetype'), url('font/woff2/iosevka-fixed-ss08-extended.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Iosevka Fixed SS08 Web';
-	font-display: swap;
-	font-weight: 700;
-	font-stretch: expanded;
-	font-style: normal;
-	src: url('font/ttf/iosevka-fixed-ss08-extendedbold.ttf') format('truetype'), url('font/woff2/iosevka-fixed-ss08-extendedbold.woff2') format('woff2');
-}
-
 #asemic {
   display: flex;
   align-items: center;
@@ -41,7 +23,7 @@
   background: var(--bg);
   color: var(--fg);
   border:1px solid var(--fg2);
-  font-family:'Iosevka Fixed SS08 Web', monospace;
+  font-family:'Roboto Mono', monospace;
   font-size: 15px;
 }
 

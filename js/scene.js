@@ -1,11 +1,122 @@
 class Scene {
+  static ENTERING = 0;
+  static PLAYING = 1;
+  static EXITING = 2;
+  static STOP = 3;
+  static TRANSITION_SPEED = 0.1;
   // Create a scene.
   constructor(game, ruleSet, text) {
     this.game = game;
     this.ruleSet = ruleSet;
-    this.text = text;
+    
+    //remove first and last line if empty
+    let lines = text.split("\n");
+    if(lines.length>0 && lines[0].length == 0) lines.shift();
+    if(lines.length>0 && lines[lines.length-1].length == 0) lines.pop();
+    console.log('lines:', lines.length)
+    this.text = lines.join("\n");
   }
 
+  toHTML(){
+    let container = document.createElement('pre');
+    container.id = 'scene';
+    let opacity = 1;
+    if(this.state == Scene.ENTERING) opacity = this.transition;
+    if(this.state == Scene.EXITING) opacity = 1-this.transition;
+    container.style.setProperty('opacity', opacity);
+    this.appendContent(container);
+    return container;
+  }
+
+  init(){
+    // Transition props
+    this.state = Scene.ENTERING;
+    this.transition = 0;
+  }
+
+  exit(callback){
+    console.log('exit')
+    this.transition = 0;
+    this.state = Scene.EXITING;
+    this.onExit = callback;
+  }
+
+  next(){
+    if(this.game.currentSceneIndex == this.game.scenes.length-1){
+      this.state = Scene.STOP;
+      return;
+    }
+    this.exit(()=>{this.game.nextScene()});
+  }
+
+  reset(){
+    this.exit(()=>{this.game.resetScene()});
+  }
+
+  // update input
+  input(keys){
+    keys.forEach(key => {
+      switch (key) {
+        case "r":
+        this.reset();
+        break;
+      }
+    });
+  }
+
+  update(dt){
+    if(this.state == Scene.STOP){
+      return false;
+    }
+    if(this.state != Scene.PLAYING && this.transition < 1){
+      this.transition += Scene.TRANSITION_SPEED;
+      return false;
+    }
+
+    if(this.state == Scene.ENTERING){
+      this.state = Scene.PLAYING
+    }
+
+    if(this.state == Scene.EXITING){
+      this.onExit();
+    }
+    return true;
+  }
+}
+
+class ScreenScene extends Scene {
+
+  appendContent(container){
+    let lines = this.text.split("\n");
+    lines.forEach(line=>{
+      let chars = line.split("");
+      chars.forEach(char=>{
+        let node = document.createElement('span');
+        node.innerHTML = char;
+        container.appendChild(node);  
+      });
+      container.appendChild(document.createTextNode('\n'));
+    })
+  }
+
+  // update input
+  input(keys){
+    super.input(keys)
+    if(this.state != Scene.PLAYING) return;
+    keys.forEach(key => {
+      switch (key) {
+        case "ArrowRight": case "d":
+        case "ArrowLeft": case "q":
+        case "ArrowDown": case "s":
+        case " ":
+        case "ArrowUp": case "z":
+        this.next();
+      }
+    });
+  }
+}
+
+class LevelScene extends Scene{
   // Is there something solid at x y coords. ignore ignoreEntity.
   solidAt(x, y, ignoreEntity){
     //TODO: add check for scene borders
@@ -36,10 +147,7 @@ class Scene {
 
   getEntitiesByType(type) {return this.entities.filter((e)=> e.type == type)}
 
-  toHTML(){
-    let scene = document.createElement('pre');
-    scene.id = 'scene';
-
+  appendContent(container){
     let ordonnedEntityList = Array(this.size.x).fill().map(x => Array(this.size.y).fill())
     this.entities.forEach((e) => {
       ordonnedEntityList[e.x][e.y] = e
@@ -54,27 +162,18 @@ class Scene {
     let from = this.game.camera.subtract(this.game.size.divide(2));
     let to = this.game.camera.add(this.game.size.divide(2));
     for (let y = from.y; y < to.y; y++) {
-      // let line = document.createElement('div');
-      // line.classList.add('line');
       for (let x = from.x; x < to.x; x++) {
-        scene.appendChild(ordonnedEntityList[x][y].toHTML());
-        // line.appendChild(ordonnedEntityList[x][y].toHTML());
+        container.appendChild(ordonnedEntityList[x][y].toHTML());
       }
-      scene.appendChild(document.createTextNode('\n'));
+      container.appendChild(document.createTextNode('\n'));
     }
-    return scene;
   }
 
   init(){
+    super.init()
+
     // The world (each lines in an array of strings)
     let lines = this.text.split("\n");
-    //remove first and last line if empty
-    if(lines[0].length == 0){
-      lines.shift();
-    }
-    if(lines.length>0 && lines[lines.length-1].length == 0){
-      lines.pop();
-    }
     this.size = V()
     this.size.x = lines.reduce((p, c)=>{return Math.max(p, c.length)}, 0);
     this.size.y = lines.length;
@@ -86,7 +185,44 @@ class Scene {
     }
   }
 
+    // update input
+    input(keys){
+      super.input(keys)
+    if(this.state != Scene.PLAYING) return;
+    let players = this.getEntitiesByType('player');
+      keys.forEach(key => {
+        switch (key) {
+          case "ArrowRight": case "d":
+          players.forEach(p => p.moveRight());
+          break;
+          case "ArrowLeft": case "q":
+          players.forEach(p => p.moveLeft());
+          break;
+          case "ArrowDown": case "s":
+          if (this.getRule('controls')=="adventure") {
+            players.forEach(p => p.moveDown());
+          }
+          break;
+          case " ":
+          if (this.game.getRule('controls')=="adventure") {
+            break;
+          }
+          case "ArrowUp": case "z":
+          if (this.game.getRule('controls')=="platformer") {
+            players.forEach(p => p.jump());
+          }
+          if (this.game.getRule('controls')=="adventure") {
+            players.forEach(p => p.moveUp());
+          }
+        }
+      });
+    }
+  
+
   update(dt){
+    let updating = super.update(dt)
+    if(!updating) return;
+
     this.entities.forEach((entity) => {
       entity.update(dt);
     });
@@ -110,17 +246,13 @@ class Scene {
     });
 
     if (!goals.length){
-      this.game.nextScene();
+      this.next();
       return;
     }
 
     if (!players.length){
-      this.game.resetScene();
+      this.reset();
       return;
     }
-
-
-
-
   }
 }

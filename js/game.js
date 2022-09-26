@@ -1,5 +1,6 @@
 class Game {
 
+  static INTERVAL_TIME = 1000/25
   // Create an empty Game.
   constructor(ruleSet) {
     this.ruleSet = ruleSet;
@@ -18,12 +19,21 @@ class Game {
     if (errorNode) throw new ParserError(errorNode.textContent);
 
     const gameElement = xmlDoc.documentElement
-    if (gameElement.tagName != 'game') throw new DocumentNodeTagError();
-    if (gameElement.children.length == 0) throw new EmptyGameError();
-
+    if (gameElement.tagName != 'game') throw new DocumentNodeTagError(gameElement.tagName);
     let game = new Game(Game.ruleSetFromElement(gameElement));
+    if (gameElement.children.length == 0){
+      game.addLevel({}, gameElement.textContent)
+    }
     for (let scene of gameElement.children) {
-      game.addScene(Game.ruleSetFromElement(scene), scene.textContent)
+      if(scene.tagName == 'level'){
+        game.addLevel(Game.ruleSetFromElement(scene), scene.textContent)
+      }
+      else if(scene.tagName == 'screen'){
+        game.addScreen(Game.ruleSetFromElement(scene), scene.textContent)
+      }
+      else{
+        throw new SceneTagError(scene.tagName);
+      }
     }
     return game;
   }
@@ -51,8 +61,18 @@ class Game {
   }
 
   // Add a scene to the game.
-  addScene(ruleSet, text) {
-    this.scenes.push(new Scene(this, ruleSet, text))
+  addScene(scene) {
+    this.scenes.push(scene)
+  }
+
+  // Add a screen to the game.
+  addScreen(ruleSet, text) {
+    this.addScene(new ScreenScene(this, ruleSet, text))
+  }
+
+  // Add a level to the game.
+  addLevel(ruleSet, text) {
+    this.addScene(new LevelScene(this, ruleSet, text))
   }
 
   // Return the scene at the given index or the current scene if index is ommited.
@@ -144,7 +164,7 @@ class Game {
     document.addEventListener('keyup', this.onKeyUp);
 
     // Register interval
-    this.interval = setInterval(()=>{this.update()}, 1000/25)
+    this.interval = setInterval(()=>{this.update()}, Game.INTERVAL_TIME)
 
     // Load first scene
     this.currentSceneIndex = 0;
@@ -162,57 +182,25 @@ class Game {
 
   // update the game
   update(){
-    let dt = (1000/25)/1000
+    let dt = (Game.INTERVAL_TIME)/1000
 
-    this.updateInput()
-    this.getScene().update(dt);
-
-    // Update size and camera
     let scene = this.getScene()
-    let player = scene.getEntitiesByType('player')[0]
+    
+    // Update size and camera
+    let player = scene.getEntitiesByType && scene.getEntitiesByType('player')[0]
     if(player){
       this.size = scene.size.constrain(V(),V(this.getRule('max_width'),this.getRule('max_height')));
       this.camera = player.pos.floor().constrain(this.size.divide(2),scene.size.subtract(this.size.divide(2)));
     }
+
+    // Update scene
+    scene.input(this.keys);
+    scene.update(dt)
 
     // Update html
     let html = this.toHTML();
     if (!this.container.firstChild.isEqualNode(html)) {
       this.container.firstChild.replaceWith(html);
     }
-  }
-
-  // update input
-  updateInput(){
-    let players = this.getScene().getEntitiesByType('player');
-    this.keys.forEach(key => {
-      switch (key) {
-        case "r":
-        this.resetScene();
-        break;
-        case "ArrowRight": case "d":
-        players.forEach(p => p.moveRight());
-        break;
-        case "ArrowLeft": case "q":
-        players.forEach(p => p.moveLeft());
-        break;
-        case "ArrowDown": case "s":
-        if (this.getRule('controls')=="adventure") {
-          players.forEach(p => p.moveDown());
-        }
-        break;
-        case " ":
-        if (this.getRule('controls')=="adventure") {
-          break;
-        }
-        case "ArrowUp": case "z":
-        if (this.getRule('controls')=="platformer") {
-          players.forEach(p => p.jump());
-        }
-        if (this.getRule('controls')=="adventure") {
-          players.forEach(p => p.moveUp());
-        }
-      }
-    });
   }
 }

@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>asemic</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono">
     <link rel="stylesheet" href="css/editor.css">
-    <link rel="stylesheet" href="css/font.css">
     <link rel="stylesheet" href="css/asemic.css">
-    <script src="js/lib/vue.global.js" charset="utf-8"></script>
+    <script src="js/lib/vue.global.js" charset="ut  f-8"></script>
     <script src="js/lib/ace.js" charset="utf-8"></script>
     <script src="js/export.js" charset="utf-8"></script>
 
@@ -21,19 +21,21 @@
     <div id="app">
       <nav>
         <button
-          v-for="mode in ['code', 'test', 'save']"
+          v-for="mode in ['code', 'test', 'export']"
           :disabled="currentMode==mode"
-          @click="currentMode=mode"
+          @click="switchMode(mode)"
         >{{mode}}</button>
       </nav>
+      <div
+      v-if="errorMessage"
+      class="error"
+    >{{errorMessage}}</div>
+
       <div v-if="currentMode=='code'" id="code">
-        <div
-          v-if="errorMessage"
-          class="error"
-        >{{errorMessage}}</div>
         <editor
           :code="code"
           @changecode="changecode"
+          @savecode="exportXML"
         ></editor>
       </div>
       <div v-if="currentMode=='test'" id="test">
@@ -42,9 +44,8 @@
           @error=error
         ></game>
       </div>
-      <div v-if="currentMode=='save'" id="save">
-        <button @click=exportStandAlone>export game</button>
-        <button @click=exportXML>export xml</button>
+      <div v-if="currentMode=='export'" id="export">
+        <button @click=exportStandAlone>export my game</button>
       </div>
     </div>
 

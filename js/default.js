@@ -20,8 +20,20 @@ DEFAULT_RULE_SET = {
 };
 
 DEFAULT_GAME = `<game>
-<scene>
-@
-          ?
-</scene>
+<level>
+
+
+
+   @
+  ###             
+
+
+               ?
+#####^^^^^########
+</level>
+<screen>
+
+    YOU WIN !
+
+</screen>
 </game>`;

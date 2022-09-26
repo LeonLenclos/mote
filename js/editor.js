@@ -9,6 +9,12 @@ const app = createApp({
     }
   },
   methods: {
+    switchMode(mode){
+      this.errorMessage = '';
+      console.log(`Mode: ${mode}`)
+      this.currentMode=mode;
+      if(document.activeElement) document.activeElement.blur();
+    },
     changecode(value){
       this.code = value;
     },
@@ -28,15 +34,46 @@ const app = createApp({
 app.component('editor', {
   data() {
     return {
-      editor:undefined
+      editor:undefined,
+      showInvisibles:false,
     }
   },
   props:['code'],
-  template:'<div id="ace-editor"></div>',
+  template:`
+  <div class="container">
+    <main id="ace-editor">
+    </main>
+    <footer>
+      <label for="showInvisibles">Show invisibles:
+        <input type="checkbox" id="showInvisibles" v-model="showInvisibles" />
+      </label>
+      <label class="file-input" for="importXML">
+        <input type="file" id="importXML" accept="application/xml" @change="importXML" />
+        <span>Import XML</span>
+      </label>
+      <button @click="$emit('savecode')">save XML</button>
+      </footer>
+  </div>`,
+  watch:{
+    showInvisibles(val){
+      this.editor.setOption("showInvisibles", val);
+    }
+  },
+  methods:{
+    importXML(event){
+      event.target.files[0].text().then((value)=>{
+        this.editor.setValue(value)
+        this.$emit('changecode', value)
+      })
+    },
+  },
   mounted() {
     this.editor = ace.edit("ace-editor");
     this.editor.session.setMode("ace/mode/xml");
-    this.editor.setOption("showInvisibles", true);
+    this.editor.setOption("showInvisibles", this.showInvisibles);
+    this.editor.setOption("showPrintMargin", false);
+    this.editor.setOption("displayIndentGuides", false);
+
     this.editor.setBehavioursEnabled(false);
     this.editor.setTheme("ace/theme/chrome");
     this.editor.setValue(this.code);
