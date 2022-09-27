@@ -2,7 +2,7 @@
 
 Ce tutoriel va vous guider pas à pas dans l'utilisation de Mote.
 
-## C'est quoi Mote ?
+## C'est quoi Mote ?
 
 Mote est un moteur de jeu en mode texte.
 
@@ -32,7 +32,7 @@ Prenez le temps d'essayer les exemples sur l'éditeur :
 3. Essayez de faire des modifications dans le code et alternez entre **code** et **test**.
 
 
-### Mon premier jeu
+### Mon premier jeu
 
 ```xml
 <game>
@@ -105,7 +105,7 @@ C'est un peu étrange de voir le jeu se figer à la fin, et si on affichais plut
 
 
 
-  @                      ?
+  @                      ?
 -------              --------
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -148,7 +148,7 @@ title="le ravin"
 
 
 
-  @                      ?
+  @                      ?
 -------              --------
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +198,7 @@ killer="\/|"
 
 
 
-  ?                      X
+  ?                      X
 -------              --------
 
 /||\\/|//|\\|||\\//|/\\|//|//
@@ -227,7 +227,7 @@ On peut indiquer plusieurs caractères dans la valeur de l'option pour indiquer 
 
 ### L'auteur
 
-Mon jeu est prêt,  il ne me reste plus qu'à le signer !
+Mon jeu est prêt,  il ne me reste plus qu'à le signer !
 
 ```xml
 <game
@@ -252,7 +252,7 @@ killer="\/|"
 
 
 
-  ?                      X
+  ?                      X
 -------              --------
 
 /||\\/|//|\\|||\\//|/\\|//|//
@@ -290,7 +290,7 @@ En mode **export**, cliquer sur le bouton **export my game** enregistre un fiche
 
 
 
-# 3- Notions avancées
+# 3- Notions avancées
 
 ## Condition de victoire et de défaite.
 
@@ -300,7 +300,7 @@ Lorsqu'un joueur touche un but, ce but disparaît. La partie est gagnée s'il n'
 
 Lorsqu'un joueur touche un élément mortel, ce joueur disparaît. La partie est perdue s'il n'y a plus aucun joueur.
 
-### Plusieurs buts ou joueurs
+### Plusieurs buts ou joueurs
 
 ```xml
 <game>
@@ -394,7 +394,7 @@ Par défaut, la valeur de ces règles est `"false"`
 ## La taille
 
 
-### Taille variable
+### Taille variable
 
 ```xml
 <game
@@ -519,7 +519,7 @@ L'affichage s'adapte à la taille du niveau, mais si la taille du niveau dépass
 
 ## Des règles spécifiques aux niveaux
 
-Pour l'instant nous avons attaché toutes les règles au jeu entier en les écrivant entre `<game` et `>`. Il est aussi possible d'attacher des règles aux niveaux ou les écrans en les écrivant entre `<level` et `>` ou entre `<screen` et `>`
+Pour l'instant nous avons attaché toutes les règles au jeu entier en les écrivant entre `<game` et `>`. Il est aussi possible d'attacher des règles aux niveaux ou les écrans en les écrivant entre `<level` et `>` ou entre `<screen` et `>`
 
 ```xml
 <game
@@ -550,7 +550,7 @@ Toute les règles peuvent être définie localement (dans un `<level>`), globale
 
 ## Les caractères plus en détail
 
-On a déjà vu plus tôt les règles `player`, `goal` et `killer` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autre type de caractère, `solid` et `air`, qui disposent eux aussi d'une règle. Enfin, il éxiste deux règles (`default_char` et `default_type`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
+On a déjà vu plus tôt les règles `player`, `goal` et `killer` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autre type de caractère, `solid` et `air`, qui disposent eux aussi d'une règle. Enfin, il éxiste deux règles (`default_char` et `default_type`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
 
 
 - `player` : (valeur par défaut : `"@"`) définit le ou les caractères qui représentent le joueur.
@@ -692,7 +692,7 @@ Si vous transgressez une de ces interdiction, vous aurez une erreur. Il existe n
 
 ### Contourner cette inderdiction dans la description du jeu
 
-Pour contourner l'interdiction dans la description du jeu il faut placer la description dans une section CDATA. Une section CDATA commence par `<![CDATA[` et se termine par `]]>`
+Pour contourner l'interdiction dans la description du jeu il faut placer la description dans une section CDATA. Une section CDATA commence par `<![CDATA[` et se termine par `]]>`
 
 ```xml
 <game>
@@ -806,7 +806,7 @@ Bravo !
 </game>
 ```
 
-# 4- Ressources
+# 4- Ressources
 
 - Pour choisir une couleur et connaître son code héxadécimal (`Hex Code`) : https://colorpicker.me/
 - Pas la peine de se limiter aux caractères disponnibles sur le clavier, La plus-part des caractère listés sur cette page devraient pouvoir être utilisé dans un jeu mote : https://en.wikipedia.org/wiki/List_of_Unicode_characters

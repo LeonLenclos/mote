@@ -28,6 +28,23 @@ nav {
 }
 
 
+nav>a{
+	color:linen;
+	margin: .5em;
+	text-decoration: none;
+}
+
+nav>a:hover{
+	font-weight: bold;
+}
+nav>a:first-child{
+	margin-right:auto;
+}
+nav>a:last-child{
+	margin-left:auto;
+}
+
+
 button,
 .file-input {
 	display: inline-block;

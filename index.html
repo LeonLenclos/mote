@@ -20,11 +20,13 @@
   <body>
     <div id="app">
       <nav>
+        <a href=".">mote</a>
         <button
           v-for="mode in ['code', 'test', 'export']"
           :disabled="currentMode==mode"
           @click="switchMode(mode)"
         >{{mode}}</button>
+        <a href="doc" target="_blank">?</a>
       </nav>
       <div
       v-if="errorMessage"
