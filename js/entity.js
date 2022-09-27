@@ -17,6 +17,7 @@ class Entity {
         break;
       }
     }
+    console.log(char, entityType)
 
     if (entityType == 'player') {
       return new Player(scene, char, entityType, x, y)
@@ -51,6 +52,7 @@ class Player extends Entity {
     this.landed = false;
     this.jumping = false;
     this.canJump = false;
+    this.wantToJump = false;
     // timer
     this.jumpTimer = 0;
     this.coyoteTimer = 0;
@@ -61,9 +63,7 @@ class Player extends Entity {
     this.moveForce = V(r('move_force'), 0);
     this.gravity = V(0, r('gravity'));
     this.maximumVelocity = r('maximum_velocity');
-    this.gliding = r('gliding');
     this.braking = r('braking');
-    this.airGliding = r('air_gliding');
     this.coyoteTime = r('coyote_time');
     this.jumpTime = r('jump_time');
     this.jumpBufferTime = r('jump_buffer_time');
@@ -81,6 +81,7 @@ class Player extends Entity {
     return node;
   }
   jump() {
+    this.wantToJump = true;
     if(this.canJump){
       this.jumping = true;
       this.applyForce(this.jumpForce);
@@ -149,12 +150,10 @@ class Player extends Entity {
     || (!this.jumping && this.coyoteTimer < this.coyoteTime)
     || (this.jumping && this.landed && this.jumpBufferTimer < this.jumpBufferTime);
 
-    // console.log(this.landed, this.canJump, this.jumpTimer, this.jumpTime)
 
+    
     // update vel
     this.vel = this.vel.add(this.acc);
-    // constrain
-    // this.vel = this.vel.constrain(V(-this.maximumVelocity, -this.maximumVelocity),V(this.maximumVelocity, this.maximumVelocity));
 
     // collision
     this.landed = (this.scene.solidAt(this.x, this.y+1, this) || this.y == this.scene.size.y-1)
@@ -172,12 +171,33 @@ class Player extends Entity {
 
     // move
     let constrainedVel = this.vel.constrain(V(-1, -1),V(1, 1));
+    let escapeDirection = V(1,0)
     let pos = this.pos.add(constrainedVel);
 
-    // Clip
-    while(this.scene.solidAt(pos.x, pos.y, this)) {
-      pos = pos.subtract(constrainedVel);
+    // Bounce clip
+    // let bounceClipAttemp = 0
+    // while(constrainedVel.length()>0 && this.scene.solidAt(pos.x, pos.y, this) && bounceClipAttemp < 10) {
+    //   pos = pos.subtract(constrainedVel);
+    //   bounceClipAttemp ++;
+    // }
+
+    // Brutforce clip
+    if(this.scene.solidAt(pos.x, pos.y, this)){
+      let nearestFreePos = undefined;
+      for (let x = 0; x < this.scene.size.x; x++) {
+        for (let y = 0; y < this.scene.size.y; y++) {
+          if(!this.scene.solidAt(x, y, this)){
+            if(!nearestFreePos || pos.sqdist(V(x, y)) < pos.sqdist(nearestFreePos)){
+              nearestFreePos = V(x, y);
+            }
+          }
+        }
+      }
+      console.log(nearestFreePos, pos)
+      pos = nearestFreePos
     }
+
+
 
     this.pos = pos
 
