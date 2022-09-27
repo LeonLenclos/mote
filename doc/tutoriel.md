@@ -2,8 +2,8 @@
 
 - [0- Introduction](#0--introduction)
 - [1- Prise en main](#1--prise-en-main)
-- [2- Utiliser l'éditeur](#2--utiliser-lediteur)
-- [3- Notions avancées](#3--notions-avancees)
+- [2- Utiliser l'éditeur](#2--utiliser-léditeur)
+- [3- Notions avancées](#3--notions-avancées)
 - [4- Ressources](#4--ressources)
 
 # 0- Introduction
@@ -853,5 +853,5 @@ Bravo !
 
 # 4- Ressources
 
-- Pour choisir une couleur et connaître son code hexadécimal (`Hex Code`) : https://colorpicker.me/
-- Pas la peine de se limiter aux caractères disponibles sur le clavier, La plupart des caractères listés sur cette page devraient pouvoir être utilisé dans un jeu mote : https://en.wikipedia.org/wiki/List_of_Unicode_characters
+- Pour choisir une couleur et connaître son code hexadécimal (`Hex Code`) : [colorpicker.me](https://colorpicker.me)
+- Pas la peine de se limiter aux caractères disponibles sur le clavier, La plupart des caractères listés sur cette page devraient pouvoir être utilisé dans un jeu mote : [wikipedia:List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
