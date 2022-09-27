@@ -11,10 +11,6 @@
 
 
 #mote {
-  --bg:#222;
-  --bg2:#000;
-  --fg:#eee;
-  --fg2:#888;
 
   background: var(--bg2);
 }

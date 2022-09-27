@@ -17,7 +17,6 @@ class Entity {
         break;
       }
     }
-    console.log(char, entityType)
 
     if (entityType == 'player') {
       return new Player(scene, char, entityType, x, y)
@@ -82,10 +81,6 @@ class Player extends Entity {
   }
   jump() {
     this.wantToJump = true;
-    if(this.canJump){
-      this.jumping = true;
-      this.applyForce(this.jumpForce);
-    }
   }
 
   moveRight() {
@@ -121,9 +116,10 @@ class Player extends Entity {
     this.applyForce(this.gravity);
 
     // Jump buffering
-    if(this.jumping){
+    if(this.wantToJump && this.jumping){
       this.jumpBufferTimer += dt;
-    } else {
+    }
+    if (!this.wantToJump) {
       this.jumpBufferTimer = 0;
     }
 
@@ -134,24 +130,25 @@ class Player extends Entity {
       this.jumpTimer = 0;
     }
 
-    if (this.landed && this.jumpBufferTimer < this.jumpBufferTime) {
-      this.jumpTimer = 0;
-    }
-
     //coyote
     this.coyoteTimer += dt;
     if (this.landed) {
       this.coyoteTimer = 0
     }
 
-    // can jump if not jumping for too long or landed or coyote
-    this.canJump = (!this.jumping && this.landed)
-    || (this.jumping && this.jumpTimer < this.jumpTime)
-    || (!this.jumping && this.coyoteTimer < this.coyoteTime)
-    || (this.jumping && this.landed && this.jumpBufferTimer < this.jumpBufferTime);
 
+    let canCoyoteJump = !this.jumping && !this.landed && this.coyoteTimer < this.coyoteTime && this.jumpBufferTimer < this.jumpBufferTime;
+    let canJumpingHigher = this.jumping && this.jumpTimer < this.jumpTime;
+    let canBasicJump = !this.jumping && this.landed && this.jumpBufferTimer < this.jumpBufferTime
+    this.canJump = canCoyoteJump || canJumpingHigher || canBasicJump
 
-    
+    this.jumping = this.wantToJump && this.canJump;
+    this.wantToJump = false;
+
+    if(this.jumping){
+      this.applyForce(this.jumpForce);
+    }
+
     // update vel
     this.vel = this.vel.add(this.acc);
 
@@ -206,6 +203,5 @@ class Player extends Entity {
 
     // reset
     this.acc = V(0,0);
-    this.jumping = false;
   }
 }

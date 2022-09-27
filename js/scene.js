@@ -13,7 +13,6 @@ class Scene {
     let lines = text.split("\n");
     if(lines.length>0 && lines[0].length == 0) lines.shift();
     if(lines.length>0 && lines[lines.length-1].length == 0) lines.pop();
-    console.log('lines:', lines.length)
     this.text = lines.join("\n");
   }
 
@@ -32,10 +31,16 @@ class Scene {
     // Transition props
     this.state = Scene.ENTERING;
     this.transition = 0;
+
+    // Style
+    const colors = ['bg', 'bg2', 'fg', 'fg2'];
+    console.log(this.game.container)
+    colors.forEach(c=>{
+      this.game.container.style.setProperty(`--${c}`, this.game.getRule(`${c}_color`));
+    })
   }
 
   exit(callback){
-    console.log('exit')
     this.transition = 0;
     this.state = Scene.EXITING;
     this.onExit = callback;
@@ -127,6 +132,7 @@ class LevelScene extends Scene{
   addEntity(char, x, y){
     // If no char, replace by defalut char
     const defaultChar = this.game.getRule('default_char')[0];
+    const airChar = this.game.getRule('air')[0] || defaultChar;
     char = char || defaultChar;
 
     // Add entity to entities
@@ -135,7 +141,7 @@ class LevelScene extends Scene{
 
     // If entity is player also add a default char behind.
     if (entity.type == 'player' || entity.type == 'goal') {
-      this.addEntity(defaultChar, x, y);
+      this.addEntity(airChar, x, y);
     }
   }
 
@@ -148,22 +154,33 @@ class LevelScene extends Scene{
   getEntitiesByType(type) {return this.entities.filter((e)=> e.type == type)}
 
   appendContent(container){
-    let ordonnedEntityList = Array(this.size.x).fill().map(x => Array(this.size.y).fill())
-    this.entities.forEach((e) => {
-      ordonnedEntityList[e.x][e.y] = e
-    });
-    this.getEntitiesByType('goal').forEach((e) => {
-      ordonnedEntityList[e.x][e.y] = e
-    });
+    
+    // Create content grid
+    let contentGrid = Array(this.size.x).fill().map(x => Array(this.size.y).fill())
+    const addEntityTocontentGrid = e => contentGrid[e.x][e.y] = e;
+    this.entities.forEach(addEntityTocontentGrid);
+    this.getEntitiesByType('goal').forEach(addEntityTocontentGrid);
+    this.getEntitiesByType('player').forEach(addEntityTocontentGrid);
 
-    this.getEntitiesByType('player').forEach((e) => {
-      ordonnedEntityList[e.x][e.y] = e
-    });
-    let from = this.game.camera.subtract(this.game.size.divide(2));
-    let to = this.game.camera.add(this.game.size.divide(2));
+    // Compute size and camera
+    let minSize = V(0,0);
+    let maxSize = V(this.game.getRule('max_width'),this.game.getRule('max_height'));
+    let displaySize = this.size.constrain(V(), maxSize);
+
+    let player = this.getEntitiesByType('player')[0];
+    if(player){
+      this.camera = player.pos.floor().subtract(displaySize.divide(2).floor())
+      this.camera = this.camera.constrain(V(0,0), this.size.subtract(displaySize));
+    }
+
+    // append grid to container
+    let from = this.camera;
+    let to = this.camera.add(displaySize);
     for (let y = from.y; y < to.y; y++) {
       for (let x = from.x; x < to.x; x++) {
-        container.appendChild(ordonnedEntityList[x][y].toHTML());
+        if(contentGrid[x] && contentGrid[x][y] instanceof Entity){
+          container.appendChild(contentGrid[x][y].toHTML());
+        }
       }
       container.appendChild(document.createTextNode('\n'));
     }
@@ -174,15 +191,32 @@ class LevelScene extends Scene{
 
     // The world (each lines in an array of strings)
     let lines = this.text.split("\n");
+
+    // Size
     this.size = V()
     this.size.x = lines.reduce((p, c)=>{return Math.max(p, c.length)}, 0);
     this.size.y = lines.length;
+    this.camera = V();
+
+    // Create entities
     this.entities = [];
     for (var y = 0; y < this.size.y; y++) {
       for (var x = 0; x < this.size.x; x++) {
         this.addEntity(lines[y][x], x, y);
       }
     }
+
+    // Victory and defeat condition
+    this.min_goals = 0;
+    this.min_players = 0;
+    if(this.game.getRule('win_on_first_goal')){
+      this.min_goals = this.getEntitiesByType('goal').length -1;
+    }
+    if(this.game.getRule('loose_on_first_death')){
+      this.min_players = this.getEntitiesByType('player').length -1;
+    }
+    
+
   }
 
     // update input
@@ -199,7 +233,7 @@ class LevelScene extends Scene{
           players.forEach(p => p.moveLeft());
           break;
           case "ArrowDown": case "s":
-          if (this.getRule('controls')=="adventure") {
+          if (this.game.getRule('controls')=="adventure") {
             players.forEach(p => p.moveDown());
           }
           break;
@@ -228,8 +262,9 @@ class LevelScene extends Scene{
     });
 
     let players = this.getEntitiesByType('player');
-
     let goals = this.getEntitiesByType('goal');
+    let killers = this.getEntitiesByType('killer');
+
     goals.forEach((entity) => {
       let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
       if(player){
@@ -237,7 +272,6 @@ class LevelScene extends Scene{
       }
     });
 
-    let killers = this.getEntitiesByType('killer');
     killers.forEach((entity) => {
       let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
       if(player){
@@ -245,12 +279,12 @@ class LevelScene extends Scene{
       }
     });
 
-    if (!goals.length){
+    if (goals.length <= this.min_goals){
       this.next();
       return;
     }
 
-    if (!players.length){
+    if (players.length <= this.min_players){
       this.reset();
       return;
     }

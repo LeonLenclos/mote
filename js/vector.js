@@ -76,4 +76,12 @@ class Vector {
 	floor(){
 		return new Vector(Math.floor(this.x), Math.floor(this.y));
 	}
+
+	ceil(){
+		return new Vector(Math.ceil(this.x), Math.ceil(this.y));
+	}
+
+	sqdist(vector){
+		return (this.x - vector.x)**2 + (this.y - vector.y)**2
+	}
 }

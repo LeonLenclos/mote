@@ -9,9 +9,11 @@ Mote est un moteur de jeu en mode texte.
 - Un moteur de jeu : un programme qui pertmet de créer des jeux.
 - Le mode texte : un mode d'affichage ou on utilise des caractère plutôt que des pixels.
 
+Pour créer un jeu avec Mote, on écrit le code du jeu dans un langage spécial que nous allons décrire ici. Ce langage est basé sur XML. 
+
 ## L'éditeur
 
-L'éditeur se trouve actuellement à cette adresse : https://leonlenclos.github.io/mote
+L'éditeur se trouve actuélément à cette adresse : https://leonlenclos.github.io/mote
 
 L'éditeur dispose de trois modes qui sont accessibles en cliquant sur les boutons de la barre du haut :
 
@@ -166,6 +168,8 @@ title="le ravin"
 
 Nous avons intégré une option au jeu. le nom de cette option est `title`, la valeur de l'option est `"le ravin"`.
 
+On peut indiquer un titre vide avec `title=""`, dans ce cas, aucun titre ne s'affichera.
+
 Analysons cette nouvelle syntaxe en détail : L'option est renseignée à l'interieur de la balise ouvrante `<game>` plus précisément entre le `<game` et le `>`. Entre le nom et la valeur de l'option, il y a un signe `=`. On ne met pas de guillemets autour du nom de l'option mais on met des guillemets autour de la valeur.
 
 ### Les options de caractères
@@ -212,24 +216,92 @@ killer="\/|"
 </game>
 ```
 
-`title` n'est pas la seule option que l'on peut renseigner, il y en a en fait un paquet ! Ici nous nous interessons aux options de caractère qui servent à définir quel caractère représente chaque éllement du jeu :
+`title` n'est pas la seule option que l'on peut renseigner, il y en a en fait un paquet ! Ici nous nous interessons aux options de caractère qui servent à définir quel caractère représente chaque élément du jeu :
 
 - l'option `player` pour le ou les caractères qui représentent le joueur.
 - l'option `goal` pour le ou les caractères qui représentent le but.
-- l'option `killer` pour le ou les caractères qui représentent les élements mortels.
+- l'option `killer` pour le ou les caractères qui représentent les éléménts mortels.
 
-On peut indiquer plusieurs caractères dans la valeur de l'option pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les élements mortels (`killer`) : `/`, `\` et `|`.
+On peut indiquer plusieurs caractères dans la valeur de l'option pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléménts mortels (`killer`) : `/`, `\` et `|`.
 
-# 2- Notions avancées
+
+### L'auteur
+
+Mon jeu est prêt,  il ne me reste plus qu'à le signer !
+
+```xml
+<game
+title="le ravin"
+author="leon"
+player="?"
+goal="X"
+killer="\/|"
+>
+<level>
+
+
+
+
+    ?                   X
+------------    -------------
+
+/||\\/|//|\\|||\\//|/\\|//|//
+</level>
+<level>
+
+
+
+
+  ?                      X
+-------              --------
+
+/||\\/|//|\\|||\\//|/\\|//|//
+</level>
+<screen>
+
+
+
+
+          BRAVO !            
+
+
+
+</screen>
+</game>
+```
+
+Avec la règle `author`, j'indique mon nom ou mon pseudo. Ce nom s'affichera à droite du titre.
+
+
+# 2- Utiliser l'interface
+
+Rappel : cliquez sur les boutons de la barre du haut pour passer d'un mode à l'autre.
+
+## Le Mode **code** en détail
+
+- Les erreurs : apparaissent sur fond rouge lorsque l'on veut passer en mode test et que le jeu detecte des erreurs dans le code que l'on a tappé. Essayez par exemple d'écrire `<gema>` au lieu de `<game>`, vous devriez voir apparaitre une erreur. Dans ce cas, il suffit de corriger l'erreur et d'appuyer à nouveau sur **test**
+- l'option *Show invisble* en bas à gauche permet d'afficher les caractères invisibles comme par exemple les espaces.
+- Le bouton **Save XML** permet d'enregistrer le code dans un fichier xml. Il est important de sauver régulièrement pour être sûr de ne pas perdre son travail !
+- Le bouton **Import XML** permet d'importer le code contenu dans un fichier xml
+
+## Exporter le jeu
+
+En mode **export**, cliquer sur le bouton **export my game** enregistre un ficher html. Contrairement au fichier xml que l'on peut enregister en mode **code**, ce fichier ne peut pas être réouvert dans l'éditeur pour le modifier. Par contre, il contient toutes les informations pour éxecuter le jeu si on l'ouvre dans un navigateur web ! C'est la meilleure manière de partager son jeu une fois qu'on l'a fini.
+
+
+
+# 3- Notions avancées
 
 ## Condition de victoire et de défaite.
 
-
 Il peut y avoir plusieur joueurs et plusieur buts dans un niveau.
-Lorsqu'un joueur touche un but, ce but disparaît. La partie est gagnée s'il n'y a plus aucun but.
-Lorsqu'un joueur touche un ellement mortel, ce joueur disparaît. La partie est perdue s'il n'y a plus aucun joueur.
 
-La partie est gagnée quand il n'y a plus aucun goal
+Lorsqu'un joueur touche un but, ce but disparaît. La partie est gagnée s'il n'y a plus aucun but.
+
+Lorsqu'un joueur touche un élément mortel, ce joueur disparaît. La partie est perdue s'il n'y a plus aucun joueur.
+
+### Plusieurs buts ou joueurs
+
 ```xml
 <game>
 <level>
@@ -245,8 +317,8 @@ La partie est gagnée quand il n'y a plus aucun goal
 
 @          @
       @
-   @             ?
-           ========
+   @      ===   ?
+===            ===
 
 
 ^^^^^^^^^^^^^^^^^^^
@@ -257,28 +329,484 @@ BRAVO !
 </game>
 ```
 
+L'exemple ci dessus montre ce qu'il se passe quand il y a plusieur joueurs ou plusieur buts. Des joueurs peuvent mourrir ou des buts être atteint, dans les deux cas, le niveau continue tant qu'il en reste.
 
+### Aucun but ou joueur
 
 
 ```xml
 <game>
 <level>
-         QUE
-
-   @         
+   @   
 </level>
 <level>
-        SE
-
-       ?
-</level>
-<level>
-   PASSE-T-IL
-
-   @             ?
+   ?   
 </level>
 </game>
 ```
 
+L'exemple ci-dessus montre ce qu'il se passe s'il n'y a aucun but ou aucun joueur.
+- quand il n'y a aucun but : le niveau est gagné automatiquement avant même que l'on puisse jouer. On passe au niveau suivant.
+- quand il n'y a aucun joueur : le niveau est perdu automatiquement avant même que l'on puisse jouer. On recommence le niveau encore et encore.
+
+### Règles de condition de victoire et de défaire
+
+```xml
+<game
+win_on_first_goal="true"
+loose_on_first_death="true"
+>
+<level>
+
+        ?
+       ===    ?
+  ?          ===
+ ===
+
+         @
+</level>
+<level>
+
+ @         @
+      @
+          ===   ?
+===            ===
+     ===
+
+^^^^^^^^^^^^^^^^^^^
+</level>
+<screen>
+BRAVO !
+</screen>
+</game>
+```
+
+Les règles `win_on_first_goal` et `loose_on_first_death` permettent de modifier les conditions de victoire.
+
+Elle peuvent prendre la valeur de `"true"` (vrai) ou `"false"` (faux).
+
+- `win_on_first_goal` : si la valeur de cette règle est `"true"`, le niveau sera gagné dès que le premier but sera atteint.
+- `loose_on_first_death` : si la valeur de cette règle est `"true"`, le niveau sera perdu dès que le premier joueur mourra.
+
+Par défaut, la valeur de ces règles est `"false"`
 
 
+## La taille
+
+
+### Taille variable
+
+```xml
+<game
+title=""
+>
+<level>
+@ ?
+</level>
+<level>
+
+
+
+          @   ?               
+</level>
+<screen>
+BRAVO !
+</screen>
+</game>
+```
+
+La taille d'un niveau dépend de sa définition.
+- La hauteur d'un niveau est définie par le nombre de ligne dans la définition
+- La largeur d'un niveau est définie par le nombre de caractère dans la plus longue ligne de la définition
+
+Lors du calcul de la largeur du niveau, on prend en compte les espaces. Il peut être difficile de travailler avec les espaces car ils sont par définition invisible. Pour cette raison, dans le mode **code**, en bas à gauche de la fenêtre, on dispose d'une option *Show invisibles*. Cette option permet d'afficher les caractères invisibles et donc notament de voir les espaces.
+
+
+### Grandes tailles
+
+<game>
+<level>
+
+
+@                                                                                                                                                    ?
+</level>
+<level>
+
+ @
+===
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ?  
+</level>
+<screen>
+BRAVO !
+</screen>
+</game>
+
+Lorsque le niveau est très grand (en largeur, en hauteur ou les deux), le jeu limite la taille de ce qu'il affiche à 80x30 caractères. Cela ne veut pas dire que ce qui est au delà de cette limite est innaccessible. La "caméra" suivra le joueur quand il se déplacera.
+
+### Règles de taille
+
+
+```xml
+<game
+title=""
+max_width="5"
+max_height="5"
+>
+<level>
+####################
+#  #              ?#
+#                  #
+#@      #          #
+####################
+</level>
+<level>
+#####
+#   #
+#?  #
+##  #
+#   #
+#   #
+#  ##
+#   #
+##  #
+# @ #
+#####
+</level>
+<screen>
+BRAVO !
+</screen>
+</game>
+
+```
+
+Les règles `max_width` et `max_height` permettent de définir la taille maximum de laffichage. La valeur doit être un nombre entier positif.
+
+L'affichage s'adapte à la taille du niveau, mais si la taille du niveau dépasse ces valeurs, on restreint la taille de l'affichage et on suit le joueur avec la caméra.
+
+- `max_width` : définit la largeur maximum de l'affichage. (par défaut : `"80"`)
+- `max_height` : définit la hauteur maximum de l'affichage. (par défaut : `"30"`)
+
+
+## Des règles spécifiques aux niveaux
+
+Pour l'instant nous avons attaché toutes les règles au jeu entier en les écrivant entre `<game` et `>`. Il est aussi possible d'attacher des règles aux niveaux ou les écrans en les écrivant entre `<level` et `>` ou entre `<screen` et `>`
+
+```xml
+<game
+title="Le titre du jeu"
+>
+<level>
+@                 ?
+</level>
+<level
+title="uej ud ertit eL"
+>
+?                 @
+</level>
+<level>
+@                 ?
+</level>
+<screen>
+       bravo       
+</screen>
+</game>
+```
+
+Dans cet exemple la règle `title` est définie deux fois, une fois pour le jeu dans son ensemble et une fois pour le niveau 2.
+
+Pour connaitre la valeur d'une règle, le moteur de jeu cherche d'abord si elle est défini dans le niveau, si ce n'est pas le cas on regarde si elle est défini dans le jeu, sinon on prend sa valeur par défaut.
+
+Toute les règles peuvent être définie localement (dans un `<level>`), globalement (dans `<game>`), ou ne pas être définie du tout (valeur par défaut).
+
+## Les caractères plus en détail
+
+On a déjà vu plus tôt les règles `player`, `goal` et `killer` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autre type de caractère, `solid` et `air`, qui disposent eux aussi d'une règle. Enfin, il éxiste deux règles (`default_char` et `default_type`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
+
+
+- `player` : (valeur par défaut : `"@"`) définit le ou les caractères qui représentent le joueur.
+- `goal` :  (valeur par défaut : `"?"`) définit le ou les caractères qui représentent le but.
+- `killer` :  (valeur par défaut : `"^"`) définit le ou les caractères qui représentent les éléments mortels.
+- `solid` :  (valeur par défaut : `""`) définit le ou les caractères qui représentent les éléments solides.
+- `air` : (valeur par défaut : `" "`) définit le ou les caractères qui représentent l'air.
+- `default_char` :  (valeur par défaut : `" "`) définit le caractère à placer aux endroits ou il n'y a pas de caractère.
+- `default_type` :  (valeur par défaut : `"solid"`) définit le type d'élément à attribuer à un caractère qui n'est définit dans aucune règle.
+
+
+### choisir des caractères spéciaux pour l'air et les éléments solides
+
+```xml
+<game
+air=":"
+solid=" "
+>
+::::?::::::::
+::::::::::?::
+:::::::::::::
+?::::  ::::::
+:::::  ::::::
+:@:::  ::::?:
+</game>
+```
+
+
+Ici l'air est représenté par des `:` et les éléments solides sont des espaces !
+
+Notez que derrière le joueur et les buts, le jeu place automatiquement un caractère d'air.
+
+### choisir un different type par défaut
+
+```xml
+<game>
+<level
+default_type="goal"
+title="tout est le but"
+>
+
+  par exemple ?  
+
+      @
+</level>
+<level
+default_type="player"
+title="tout est le joueur"
+>
+
+  par exemple ?  
+
+      @
+</level>
+<level
+default_type="killer"
+title="tout est mortel"
+>
+
+  par exemple ?  
+
+      @
+</level>
+<level
+default_type="air"
+title="tout est de l'air"
+>
+
+  par exemple ?  
+
+      @
+</level>
+<screen
+title=""
+>
+bravo !
+</screen>
+</game>
+```
+
+En temps normal, un caractère qui n'est défini dans aucune règle est considéré comme un élément solide (`solid`). Ici, on indique que les caractères qui ne sont pas défini doivent être considéré un but (`goal`), un joueur (`player`), un élément mortel (`killer`), ou de l'air (`air`)
+
+### choisir un différent caractère par déffaut
+
+Lorsque le jeu lance un niveau, il remplie toute les cases vides avec des éspaces. Grace à la règle `default_char`, on peut définir un autre caractère de remplissage.
+
+```xml
+<game
+air=":"
+solid=" "
+default_char=":"
+>
+::::?
+::::::::::?
+
+?::::  
+:::::  
+:@:::  ::::?
+</game>
+```
+
+Cet exemple est le même qu'un peu plus haut, mais je n'ai pas eu besoin d'écrie les `:` en fin de ligne et sur les lignes vides.
+
+## Le style
+
+Les options `bg_color`, `bg2_color`, `fg_color` et `fg2_color` permettent de changer les couleurs du jeu.
+
+```xml
+<game
+bg_color="#fff8e7"
+bg2_color="#ffffd6"
+fg_color="#3c45a2"
+fg2_color="#383253"
+>
+<screen>
+
+
+    Par exemple...    
+
+
+</screen>
+</game>
+```
+
+- `bg_color` : permet ce choisir la couleur de l'arrière plan de la fenêtre.
+- `bg2_color` : permet ce choisir la couleur de l'arrière plan du jeu.
+- `fg_color` : permet ce choisir la couleur du texte.
+- `fg2_color` : permet ce choisir la couleur des contours.
+
+La valeur doit être le code Hexadécimal d'une couleur.
+
+## Caractères spéciaux
+
+Deux caractères sont interdits dans la description du jeu : `<` et `&`
+
+Trois caractères sont interdits dans les valeurs des règles : `"`, `<` et `&`
+
+Si vous transgressez une de ces interdiction, vous aurez une erreur. Il existe néamoins des moyens de contourner ces interdictions.
+
+### Contourner cette inderdiction dans la description du jeu
+
+Pour contourner l'interdiction dans la description du jeu il faut placer la description dans une section CDATA. Une section CDATA commence par `<![CDATA[` et se termine par `]]>`
+
+```xml
+<game>
+<level><![CDATA[
+
+
+   @        ?
+  <<<<<<>>>>>>  
+
+]]></level>
+<screen>
+  Bravo! 
+</screen>
+</game>
+```
+Sans la section CDATA, ce code n'aurait pas fonctionné à cause du caractère interdit `<`
+
+
+### Contourner cette inderdiction dans les valeurs des règles
+
+Pour contourner l'interdiction dans la valeur d'une règle il faut utiliser les version échapées des caractère.
+
+- `"` s'échape en écrivant `&quot;`
+- `<` s'échape en écrivant `&lt;`
+- `&` s'échape en écrivant `&amp;`
+
+
+```xml
+<game
+player="&lt;"
+>
+<level><![CDATA[
+
+ 
+ ?          <  
+]]></level>
+<screen>
+  Bravo! 
+</screen>
+</game>
+```
+
+Pour que le joueur soit représenté par `<`, je dois échaper le caractère dans la règle (en remplaçant `<` par `&lt;`) et je n'oublie pas de bien mettre ma description dans une section CDATA.
+
+## La physique
+
+Il est possible de modifier la physique du jeu nous allons voir des règles qui définissent la gravité, la force du joueur, et la gestion des sauts.
+
+jump_time )
+
+- `gravity` : (valeur par défaut : 0.6) la gravité du monde dans le quel le joueur évolue. Avec une gravité de `0`, le joueur ne retombera pas après avoir sauté. Si la gravité est plus grande que la force de saut (`jump_force`) du joueur, le joueur ne pourra pas sauter.
+- `jump_force` : (valeur par défaut : 1) la force de saut du joeur. Plus elle est grande, plus le joueur saute haut. Encore une fois, cette valeur doit être superieur à la valeur de `gravity` pour que le joueur puisse sauter.
+- `move_force` : (valeur par défaut : 1) la force de déplacement du joueur. Plus elle est basse, plus le joueur mettra du temps à atteindre sa vitesse maximale. avec une valeur de 1, la vitesse maximale est directement atteinte. (n.b. La vitesse maximale ne peut pas être modifiée)
+- `braking` : (valeur par défaut : 1) le freinage. Avec une valeur de 1, le personnage s'arrête de se déplacer dès que l'on relâche la touche de déplacement. Avec une valeur de 0, le personnage de s'arrête pas, comme s'il était sur de la glace. Differentes valeurs entre 0 et 1 donnent la sensation de sols plus ou moins glissant.
+- `jump_time` : (valeur par défaut : 0.2) pendant combien de temps (en seconde) la force du saut s'exerce si on reste appuyé sur la touche du saut. Cela permet que l'on puisse sauter plus ou moins haut selon que l'on appuie plus ou moins longtemps sur la touche du saut.
+- `coyote_time` : (valeur par défaut : 0.2) pendant combien de temps (en seconde) le joueur peut encore sauter après avoir dépasser le seuil d'une plateforme. Cela permet de donner la sensation à l'utilisateur de ne pas avoir raté un saut de manière injuste quand il se déplace sur des petites plateformes.
+- `jump_buffer_time` : (valeur par défaut : 0.2) combien de temps (en seconde) on peut commencer à appuyer sur la touche saut avant d'attérir pour sauter à nouveau. Cela permet d'enchaîner les sauts rapidement sans avoir besoin d'être précis comme un robot.
+
+```xml
+<game
+gravity="0.6"
+jump_force="1"
+move_force="1"
+braking="1"
+coyote_time="0.2"
+jump_buffer_time="0.2"
+jump_time="0.2"
+>
+
+
+
+
+
+                     @
+
+
+                =========================================
+
+                                                                     
+          ========                                                                        
+
+                 ====================
+                                                                                                      ?
+==================                                         =============================================
+
+
+</game>
+```
+
+Cet exemple contient toutes les valeurs par défaut des différentes règles de physique. Utilisez cet exemple en modifiant les règles si vous voulez experimenter differentes valeurs.
+
+
+## Les commentaires
+
+Pour s'y retrouver dans un gros projet il est possible de laisser des commentaires. Un commentaire commence par `<!--` et se termine par `-->`. Ce qu'il contient est ignoré par le moteur de jeu.
+
+```xml
+<!-- Ceci est un commentaire -->
+<game>
+<!--
+Ceci est un commentaire
+Sur plusieur lignes
+-->
+<level>
+@        ?
+</level>
+<!-- Encore un commentaire -->
+<screen>
+Bravo !
+</screen>
+</game>
+```
+
+# 4- Ressources
+
+- Pour choisir une couleur et connaître son code héxadécimal (`Hex Code`) : https://colorpicker.me/
+- Pas la peine de se limiter aux caractères disponnibles sur le clavier, La plus-part des caractère listés sur cette page devraient pouvoir être utilisé dans un jeu mote : https://en.wikipedia.org/wiki/List_of_Unicode_characters

@@ -56,7 +56,14 @@ class Game {
 
   // Return a ruleset as an object from a Dom element reading its attributes.
   static ruleSetFromElement(element){
-    let attributesArray = Array.from(element.attributes, ({name, value}) => ({[name]: value}))
+    const isNumeric = (str) => !isNaN(str) && !isNaN(parseFloat(str))
+    const createRule = ({name, value}) => {
+      if(value == 'true') value = true;
+      else if(value == 'false') value = false;
+      else if(isNumeric(value)) value = Number(value);
+      return {[name]: value};
+    }
+    let attributesArray = Array.from(element.attributes, createRule)
     return Object.assign({}, ...attributesArray)
   }
 
@@ -186,13 +193,6 @@ class Game {
 
     let scene = this.getScene()
     
-    // Update size and camera
-    let player = scene.getEntitiesByType && scene.getEntitiesByType('player')[0]
-    if(player){
-      this.size = scene.size.constrain(V(),V(this.getRule('max_width'),this.getRule('max_height')));
-      this.camera = player.pos.floor().constrain(this.size.divide(2),scene.size.subtract(this.size.divide(2)));
-    }
-
     // Update scene
     scene.input(this.keys);
     scene.update(dt)
