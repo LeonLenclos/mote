@@ -129,7 +129,7 @@ C'est un peu étrange de voir le jeu se figer à la fin, et si on affichait plut
 </game>
 ```
 
-La balise `<screen>` fonctionne comme la balise `<level>` la seule différence c'est que son contenu n'est pas jouable. Si le `<screen>` n'est pas placé à la fin du jeu comme sur cet exemple, on peut le passer en appuyant sur n'importe quelle touche.
+La balise `<screen>` fonctionne comme la balise `<level>` la seule différence c'est que son contenu n'est pas jouable. Ici, l'écran est le dernier élément du jeu, mais les écrans peuvent être placé n'importe quand dans le jeu, on peut alors les passer en appuyant sur n'importe quelle touche.
 
 ### Un titre
 
@@ -226,9 +226,9 @@ killer="\/|"
 
 `title` n'est pas la seule règle que l'on peut renseigner, il y en a en fait un paquet ! Ici nous nous intéressons aux règles de caractère qui servent à définir quel caractère représente chaque élément du jeu :
 
-- l'option `player` pour le ou les caractères qui représentent le joueur.
-- l'option `goal` pour le ou les caractères qui représentent le but.
-- l'option `killer` pour le ou les caractères qui représentent les éléments mortels.
+- la règle `player` pour le ou les caractères qui représentent le joueur.
+- la règle `goal` pour le ou les caractères qui représentent le but.
+- la règle `killer` pour le ou les caractères qui représentent les éléments mortels.
 
 On peut indiquer plusieurs caractères dans la valeur de la règle pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléments mortels (`killer`) : `/`, `\` et `|`.
 
@@ -856,3 +856,4 @@ Bravo !
 
 - Pour choisir une couleur et connaître son code hexadécimal (`Hex Code`) : [colorpicker.me](https://colorpicker.me)
 - Pas la peine de se limiter aux caractères disponibles sur le clavier, La plupart des caractères listés sur cette page devraient pouvoir être utilisé dans un jeu mote : [wikipedia:List of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
+- Un outil pour dessiner avec du texte. Le texte peut ensuite aisément être copié dans l'éditeur mote : [asciiflow.com](https://asciiflow.com)
