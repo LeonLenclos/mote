@@ -1,3 +1,1 @@
-# Mote
-
-Mote est un moteur de jeu 
+[mote](https://leonlenclos.github.io/mote/)
