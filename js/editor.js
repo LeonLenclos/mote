@@ -4,10 +4,16 @@ const app = createApp({
   data() {
     return {
       localization:'en',
+      supportedLanguages:['en', 'fr'],
       code:DEFAULT_GAME,
       currentMode: 'code',
       errorMessage:undefined,
     }
+  },
+  mounted(){
+    this.supportedLanguages.forEach(lang=>{
+      if(navigator.language.startsWith(lang)) this.localization = lang;
+    });
   },
   methods: {
     localize(key){
