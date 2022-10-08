@@ -25,10 +25,11 @@ nav {
 	height: 3em;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 }
 
 
-nav>a{
+nav>*{
 	color:linen;
 	margin: .5em;
 	text-decoration: none;
@@ -37,10 +38,10 @@ nav>a{
 nav>a:hover{
 	font-weight: bold;
 }
-nav>a:first-child{
+nav>*:first-child{
 	margin-right:auto;
 }
-nav>a:last-child{
+nav>*:last-child{
 	margin-left:auto;
 }
 
@@ -142,7 +143,34 @@ white-space: nowrap;
 }
 
 #export button {
-	margin:.5em;
+	border-radius:5em;
+
 	width: 200px;
 	height: 50px;
+}
+
+.optionselect{
+	
+}
+.optionselect button{
+	width: 5em;
+}
+
+.optionselect.open>button{
+	background: linen;
+	color:salmon;
+}
+
+.optionselect.open .options {
+	display: block;
+}
+.optionselect .options {
+		display: none;
+	position: absolute;
+	right: 0;
+	z-index: 1;
+	background:salmon;
+  list-style: none;
+  margin: 0;
+	padding: 0 .5em;
 }

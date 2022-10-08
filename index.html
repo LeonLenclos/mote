@@ -10,6 +10,7 @@
     <script src="js/lib/ace.js" charset="utf-8"></script>
     <script src="js/export.js" charset="utf-8"></script>
 
+    <script src="js/localization.js" charset="utf-8"></script>
     <script src="js/schema.js" charset="utf-8"></script>
     <script src="js/default.js" charset="utf-8"></script>
     <script src="js/vector.js" charset="utf-8"></script>
@@ -26,8 +27,10 @@
           v-for="mode in ['code', 'test', 'export']"
           :disabled="currentMode==mode"
           @click="switchMode(mode)"
-        >{{mode}}</button>
-        <a href="doc" target="_blank">?</a>
+        >{{localize(mode)}}</button>
+        <option-select v-model="localization" :options="[{name:'en', value:'en'},{name:'fr', value:'fr'}]"></option-select>
+        <!-- <a href="doc" target="_blank">?</a> -->
+
       </nav>
       <div
       v-if="errorMessage"
@@ -48,7 +51,7 @@
         ></game>
       </div>
       <div v-if="currentMode=='export'" id="export">
-        <button @click=exportStandAlone>export my game</button>
+        <button @click=exportStandAlone>{{localize('exportGame')}}</button>
       </div>
     </div>
 

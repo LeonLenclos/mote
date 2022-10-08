@@ -3,12 +3,16 @@ const {createApp} = Vue;
 const app = createApp({
   data() {
     return {
+      localization:'en',
       code:DEFAULT_GAME,
       currentMode: 'code',
       errorMessage:undefined,
     }
   },
   methods: {
+    localize(key){
+      return editorLocalization[key][this.localization];
+    },
     switchMode(mode){
       this.errorMessage = '';
       console.log(`Mode: ${mode}`)
@@ -44,14 +48,14 @@ app.component('editor', {
     <main id="ace-editor">
     </main>
     <footer>
-      <label for="showInvisibles">Show invisibles:
+      <label for="showInvisibles">{{$root.localize('showInv')}}
         <input type="checkbox" id="showInvisibles" v-model="showInvisibles" />
       </label>
       <label class="file-input" for="importXML">
         <input type="file" id="importXML" accept="application/xml" @change="importXML" />
-        <span>Import XML</span>
+        <span>{{$root.localize('importXML')}}</span>
       </label>
-      <button @click="$emit('savecode')">save XML</button>
+      <button @click="$emit('savecode')">{{$root.localize('exportXML')}}</button>
       </footer>
   </div>`,
   watch:{
@@ -104,5 +108,30 @@ app.component('game', {
     }
   },
 })
+
+app.component('option-select', {
+  data(){return{
+    open:false,
+  }},
+  props: ['modelValue', 'options'],
+  emits: ['update:modelValue'],
+  methods: {
+    toggle(){
+      this.open = !this.open;
+    },
+    select(value){
+      this.toggle();
+      this.$emit('update:modelValue', value);
+    },
+  },
+  template:`<div :class="{optionselect:true, open:open}">
+    <button @click="toggle()">{{modelValue}}</button>
+    <ul class="options">
+      <li v-for="option in options">
+        <button @click="select(option.value)">{{option.name}}</button>
+      </li>
+    </ul>
+  </div>`,
+});
 
 app.mount('#app');
