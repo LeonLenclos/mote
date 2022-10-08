@@ -152,6 +152,7 @@ class Game {
     // Create the game element.
     let game = document.createElement('div');
     game.id = 'game'
+    game.dataset.localization = this.localization;
     game.appendChild(header);
     game.appendChild(main);
     return game;

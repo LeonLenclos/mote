@@ -39,8 +39,16 @@
 #mote #game header #author {
     border-left: 1px solid var(--fg2);
 }
-#mote #game header #author:before {
+
+#mote #game[data-localization=en] header #author:before {
   content:'by ';
+}
+
+#mote #game[data-localization=fr] header #author:before {
+  content:'par ';
+}
+
+#mote #game header #author:before {
   color: var(--fg2);
 }
 
