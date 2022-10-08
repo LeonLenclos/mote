@@ -212,7 +212,7 @@ class LevelScene extends Scene{
     if(this.game.getRule('win_on_first_goal')){
       this.min_goals = this.getEntitiesByType('goal').length -1;
     }
-    if(this.game.getRule('loose_on_first_death')){
+    if(this.game.getRule('lose_on_first_death')){
       this.min_players = this.getEntitiesByType('player').length -1;
     }
     
@@ -263,7 +263,7 @@ class LevelScene extends Scene{
 
     let players = this.getEntitiesByType('player');
     let goals = this.getEntitiesByType('goal');
-    let killers = this.getEntitiesByType('killer');
+    let deadly = this.getEntitiesByType('deadly');
 
     goals.forEach((entity) => {
       let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
@@ -272,7 +272,7 @@ class LevelScene extends Scene{
       }
     });
 
-    killers.forEach((entity) => {
+    deadly.forEach((entity) => {
       let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
       if(player){
         this.removeEntity(player);

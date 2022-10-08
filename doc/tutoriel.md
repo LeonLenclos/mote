@@ -189,7 +189,7 @@ Marre du `@` du `?` et des `^`, changeons de caractères !
 title="le ravin"
 player="?"
 goal="X"
-killer="\/|"
+deadly="\/|"
 >
 <level>
 
@@ -228,9 +228,9 @@ killer="\/|"
 
 - la règle `player` pour le ou les caractères qui représentent le joueur.
 - la règle `goal` pour le ou les caractères qui représentent le but.
-- la règle `killer` pour le ou les caractères qui représentent les éléments mortels.
+- la règle `deadly` pour le ou les caractères qui représentent les éléments mortels.
 
-On peut indiquer plusieurs caractères dans la valeur de la règle pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléments mortels (`killer`) : `/`, `\` et `|`.
+On peut indiquer plusieurs caractères dans la valeur de la règle pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléments mortels (`deadly`) : `/`, `\` et `|`.
 
 
 ### L'auteur
@@ -243,7 +243,7 @@ title="le ravin"
 author="leon"
 player="?"
 goal="X"
-killer="\/|"
+deadly="\/|"
 >
 <level>
 
@@ -360,7 +360,7 @@ L'exemple ci-dessus montre ce qu'il se passe s'il n'y a aucun but ou aucun joueu
 ```xml
 <game
 win_on_first_goal="true"
-loose_on_first_death="true"
+lose_on_first_death="true"
 >
 <level>
 
@@ -387,12 +387,12 @@ BRAVO !
 </game>
 ```
 
-Les règles `win_on_first_goal` et `loose_on_first_death` permettent de modifier les conditions de victoire.
+Les règles `win_on_first_goal` et `lose_on_first_death` permettent de modifier les conditions de victoire.
 
 Elles peuvent prendre la valeur de `"true"` (vrai) ou `"false"` (faux).
 
 - `win_on_first_goal` : si la valeur de cette règle est `"true"`, le niveau sera gagné dès que le premier but sera atteint.
-- `loose_on_first_death` : si la valeur de cette règle est `"true"`, le niveau sera perdu dès que le premier joueur mourra.
+- `lose_on_first_death` : si la valeur de cette règle est `"true"`, le niveau sera perdu dès que le premier joueur mourra.
 
 Par défaut, la valeur de ces règles est `"false"`
 
@@ -573,12 +573,12 @@ Toutes les règles peuvent être définies localement (dans un `<level>`), globa
 
 ## Les caractères plus en détail
 
-On a déjà vu plus tôt les règles `player`, `goal` et `killer` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autres type de caractère, `solid` et `air`, qui disposent eux aussi d'une règle. Enfin, il existe deux règles (`default_char` et `default_type`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
+On a déjà vu plus tôt les règles `player`, `goal` et `deadly` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autres type de caractère, `solid` et `air`, qui disposent eux aussi d'une règle. Enfin, il existe deux règles (`default_char` et `default_type`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
 
 
 - `player` : (valeur par défaut : `"@"`) définit le ou les caractères qui représentent le joueur.
 - `goal` :  (valeur par défaut : `"?"`) définit le ou les caractères qui représentent le but.
-- `killer` :  (valeur par défaut : `"^"`) définit le ou les caractères qui représentent les éléments mortels.
+- `deadly` :  (valeur par défaut : `"^"`) définit le ou les caractères qui représentent les éléments mortels.
 - `solid` :  (valeur par défaut : `""`) définit le ou les caractères qui représentent les éléments solides.
 - `air` : (valeur par défaut : `" "`) définit le ou les caractères qui représentent l'air.
 - `default_char` :  (valeur par défaut : `" "`) définit le caractère à placer aux endroits ou il n'y a pas de caractère.
@@ -629,7 +629,7 @@ title="tout est le joueur"
       @
 </level>
 <level
-default_type="killer"
+default_type="deadly"
 title="tout est mortel"
 >
 
@@ -654,7 +654,7 @@ bravo !
 </game>
 ```
 
-En temps normal, un caractère qui n'est défini dans aucune règle est considéré comme un élément solide (`solid`). Ici, on indique que les caractères qui ne sont pas défini doivent être considérés comme un but (`goal`), un joueur (`player`), un élément mortel (`killer`), ou de l'air (`air`).
+En temps normal, un caractère qui n'est défini dans aucune règle est considéré comme un élément solide (`solid`). Ici, on indique que les caractères qui ne sont pas défini doivent être considérés comme un but (`goal`), un joueur (`player`), un élément mortel (`deadly`), ou de l'air (`air`).
 
 ### choisir un différent caractère par défaut
 

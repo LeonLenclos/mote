@@ -225,16 +225,16 @@ var Vue = (function (exports) {
    */
   const isVoidTag = /*#__PURE__*/ makeMap(VOID_TAGS);
 
-  function looseCompareArrays(a, b) {
+  function loseCompareArrays(a, b) {
       if (a.length !== b.length)
           return false;
       let equal = true;
       for (let i = 0; equal && i < a.length; i++) {
-          equal = looseEqual(a[i], b[i]);
+          equal = loseEqual(a[i], b[i]);
       }
       return equal;
   }
-  function looseEqual(a, b) {
+  function loseEqual(a, b) {
       if (a === b)
           return true;
       let aValidType = isDate(a);
@@ -250,7 +250,7 @@ var Vue = (function (exports) {
       aValidType = isArray(a);
       bValidType = isArray(b);
       if (aValidType || bValidType) {
-          return aValidType && bValidType ? looseCompareArrays(a, b) : false;
+          return aValidType && bValidType ? loseCompareArrays(a, b) : false;
       }
       aValidType = isObject(a);
       bValidType = isObject(b);
@@ -269,15 +269,15 @@ var Vue = (function (exports) {
               const bHasKey = b.hasOwnProperty(key);
               if ((aHasKey && !bHasKey) ||
                   (!aHasKey && bHasKey) ||
-                  !looseEqual(a[key], b[key])) {
+                  !loseEqual(a[key], b[key])) {
                   return false;
               }
           }
       }
       return String(a) === String(b);
   }
-  function looseIndexOf(arr, val) {
-      return arr.findIndex(item => looseEqual(item, val));
+  function loseIndexOf(arr, val) {
+      return arr.findIndex(item => loseEqual(item, val));
   }
 
   /**
@@ -10548,7 +10548,7 @@ var Vue = (function (exports) {
               const checked = el.checked;
               const assign = el._assign;
               if (isArray(modelValue)) {
-                  const index = looseIndexOf(modelValue, elementValue);
+                  const index = loseIndexOf(modelValue, elementValue);
                   const found = index !== -1;
                   if (checked && !found) {
                       assign(modelValue.concat(elementValue));
@@ -10584,18 +10584,18 @@ var Vue = (function (exports) {
   function setChecked(el, { value, oldValue }, vnode) {
       el._modelValue = value;
       if (isArray(value)) {
-          el.checked = looseIndexOf(value, vnode.props.value) > -1;
+          el.checked = loseIndexOf(value, vnode.props.value) > -1;
       }
       else if (isSet(value)) {
           el.checked = value.has(vnode.props.value);
       }
       else if (value !== oldValue) {
-          el.checked = looseEqual(value, getCheckboxValue(el, true));
+          el.checked = loseEqual(value, getCheckboxValue(el, true));
       }
   }
   const vModelRadio = {
       created(el, { value }, vnode) {
-          el.checked = looseEqual(value, vnode.props.value);
+          el.checked = loseEqual(value, vnode.props.value);
           el._assign = getModelAssigner(vnode);
           addEventListener(el, 'change', () => {
               el._assign(getValue(el));
@@ -10604,7 +10604,7 @@ var Vue = (function (exports) {
       beforeUpdate(el, { value, oldValue }, vnode) {
           el._assign = getModelAssigner(vnode);
           if (value !== oldValue) {
-              el.checked = looseEqual(value, vnode.props.value);
+              el.checked = loseEqual(value, vnode.props.value);
           }
       }
   };
@@ -10649,14 +10649,14 @@ var Vue = (function (exports) {
           const optionValue = getValue(option);
           if (isMultiple) {
               if (isArray(value)) {
-                  option.selected = looseIndexOf(value, optionValue) > -1;
+                  option.selected = loseIndexOf(value, optionValue) > -1;
               }
               else {
                   option.selected = value.has(optionValue);
               }
           }
           else {
-              if (looseEqual(getValue(option), value)) {
+              if (loseEqual(getValue(option), value)) {
                   if (el.selectedIndex !== i)
                       el.selectedIndex = i;
                   return;

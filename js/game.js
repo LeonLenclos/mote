@@ -2,8 +2,9 @@ class Game {
 
   static INTERVAL_TIME = 1000/25
   // Create an empty Game.
-  constructor(ruleSet) {
+  constructor(ruleSet, localization) {
     this.ruleSet = ruleSet;
+    this.localization = localization;
     this.scenes = [];
     this.currentSceneIndex = 0;
 
@@ -18,21 +19,33 @@ class Game {
     const errorNode = xmlDoc.querySelector('parsererror');
     if (errorNode) throw new ParserError(errorNode.textContent);
 
+    // Get the game element
     const gameElement = xmlDoc.documentElement
-    if (gameElement.tagName != 'game') throw new DocumentNodeTagError(gameElement.tagName);
-    let game = new Game(Game.ruleSetFromElement(gameElement));
+    let gameElementLocalization = moteSchema.elements.game.localization
+    
+    // Deduce the location from the game element
+    let localization = Object.keys(gameElementLocalization).find(k=>gameElementLocalization[k]==gameElement.tagName);
+    
+    if (!localization) throw new DocumentNodeTagError(gameElement.tagName, localization);
+
+    // Create the game
+    let ruleSet = Game.ruleSetFromElement(gameElement, localization);
+    let game = new Game(ruleSet, localization);
     if (gameElement.children.length == 0){
       game.addLevel({}, gameElement.textContent)
     }
     for (let scene of gameElement.children) {
-      if(scene.tagName == 'level'){
-        game.addLevel(Game.ruleSetFromElement(scene), scene.textContent)
+      let sceneType = Object.keys(moteSchema.elements).find(k=>moteSchema.elements[k].localization[localization]==scene.tagName);
+      if(sceneType == 'level'){
+        let ruleSet = Game.ruleSetFromElement(scene, localization);
+        game.addLevel(ruleSet, scene.textContent)
       }
-      else if(scene.tagName == 'screen'){
-        game.addScreen(Game.ruleSetFromElement(scene), scene.textContent)
+      else if(sceneType == 'screen'){
+        let ruleSet = Game.ruleSetFromElement(scene, localization);
+        game.addScreen(ruleSet, scene.textContent)
       }
       else{
-        throw new SceneTagError(scene.tagName);
+        throw new SceneTagError(scene.tagName, localization);
       }
     }
     return game;
@@ -55,13 +68,18 @@ class Game {
   }
 
   // Return a ruleset as an object from a Dom element reading its attributes.
-  static ruleSetFromElement(element){
-    const isNumeric = (str) => !isNaN(str) && !isNaN(parseFloat(str))
+  static ruleSetFromElement(element, localization){
     const createRule = ({name, value}) => {
-      if(value == 'true') value = true;
-      else if(value == 'false') value = false;
-      else if(isNumeric(value)) value = Number(value);
-      return {[name]: value};
+      for (const rule in moteSchema.rules) {
+        if(moteSchema.rules[rule].localization[localization] != name) continue;
+        if(!moteSchema.rules[rule].validation.test(value)){
+          throw new RuleValueError(rule, value, localization);
+        }
+        let processedValue = moteSchema.rules[rule].validation.process(value);
+        if(name=='player')console.log(rule, value, processedValue)
+        return {[rule]: processedValue}
+      }
+      throw new RuleNameError(name, localization);
     }
     let attributesArray = Array.from(element.attributes, createRule)
     return Object.assign({}, ...attributesArray)
@@ -108,9 +126,7 @@ class Game {
       return this.ruleSet[name];
     }
     // Search rule in default ruleSet.
-    if (DEFAULT_RULE_SET[name] !== undefined){
-      return DEFAULT_RULE_SET[name]
-    }
+    return moteSchema.rules[name].validation.process(moteSchema.rules[name].default)
   }
 
   // Return the current state of the game as a DOM Element.

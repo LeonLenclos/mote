@@ -9,9 +9,10 @@ class Entity {
 
   static fromChar(scene, char, x, y){
     // Find entity type for the char
-    const entityTypes = ['player', 'air', 'killer', 'solid', 'goal'];
+    const entityTypes = ['player', 'air', 'deadly', 'solid', 'goal'];
     let entityType = scene.game.getRule('default_type');
     for (let type of entityTypes) {
+      console.log(type, scene.game.getRule(type))
       if (scene.game.getRule(type).includes(char)) {
         entityType = type;
         break;
@@ -61,7 +62,6 @@ class Player extends Entity {
     this.jumpForce = V(0,-r('jump_force'));
     this.moveForce = V(r('move_force'), 0);
     this.gravity = V(0, r('gravity'));
-    this.maximumVelocity = r('maximum_velocity');
     this.braking = r('braking');
     this.coyoteTime = r('coyote_time');
     this.jumpTime = r('jump_time');
