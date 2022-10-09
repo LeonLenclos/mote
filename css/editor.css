@@ -7,7 +7,7 @@ html, body, #app {
   padding: 0;
   width: 100%;
   height: 100%;
-	overflow: hidden;
+	color:linen;
 }
 
 body, nav>button, #export>button, #ace-editor
@@ -87,7 +87,10 @@ button:active,
 
 }
 
+
 #app{
+			min-width:40em;
+
 	display: flex;
 	flex-direction: column;
 	
@@ -99,7 +102,6 @@ button:active,
 
 #code>.container {
 	height: 100%;
-
 }
 
 
@@ -110,6 +112,36 @@ button:active,
 	bottom:0;
 	left: 0;
 	right: 0;
+}
+#code aside {
+	position: relative;
+	top:0;
+	bottom:0;
+	left: 0;
+	right: 0;
+	height: calc(100% - 3em);
+	overflow-y: scroll;
+
+	background: salmon;
+	padding: 1em;
+	color:linen;
+	border-top: 1px solid linen;
+	float: right;
+	width:40em;
+}
+
+#code aside .help-container {
+	height: 1em;
+	/******** MEGA CHELOUUUUUUUUUUUUUUUUU ************/
+}
+.slide-enter-active,
+.slide-leave-active {
+	transition: margin 0.5s ease-in-out;
+}
+
+.slide-enter-from,
+.slide-leave-to{
+	margin-right:-40em; 
 }
 
 #code footer {
@@ -150,27 +182,67 @@ white-space: nowrap;
 }
 
 .optionselect{
-	
+
 }
 .optionselect button{
 	width: 5em;
 }
 
-.optionselect.open>button{
+button.active{
 	background: linen;
 	color:salmon;
 }
 
-.optionselect.open .options {
-	display: block;
-}
 .optionselect .options {
-		display: none;
 	position: absolute;
 	right: 0;
 	z-index: 1;
-	background:salmon;
+	background:linen;
   list-style: none;
-  margin: 0;
+  margin: .35em 0;
 	padding: 0 .5em;
+	border: 1px solid linen;
+}
+
+
+pre,code {
+	background: white;
+	padding: 0 .1em;
+  margin: 0;
+}
+
+p{ 
+margin:0;
+}
+
+#help a{
+	color:salmon;
+}
+
+table {
+	width: 100%;
+	font-size:8.5pt;
+	border-collapse: collapse;
+	margin:1.5em 0;
+}
+
+
+table td>*:first-child{
+	font-size:10pt;
+	font-weight: bold;
+}
+table th,
+table td{
+	padding: .3em 1em;
+	padding: .3em 1em;
+  border:1px solid slategray;
+}
+table td {
+	background: linen;
+	color:slategray;
+}
+
+table th {
+	background: slategray;
+	padding: .3em 1em;
 }

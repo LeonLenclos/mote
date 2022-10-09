@@ -1,14 +1,14 @@
 let moteSchema = {};
 
-moteSchema.elements = {
+moteSchema.tags = {
     game:{
         localization:{
             'en':'game',
             'fr':'jeu',
         },
         doc:{
-            'en':"Defines a game. There must always be one and only one game element that contains everything else. The game can either be defined by the text it contains, or by a sequence of scenes (levels or screens).",
-            'fr':"Définit un jeu. Il doit toujours y avoir un et un seul élément de jeu qui contient tout le reste. Le jeu peut être défini soit par le texte qu'il contient, soit par une succession de scènes (niveaux ou écrans).",
+            'en':"Defines a game. The game can either be defined by the text it contains, or by a sequence of scenes (levels or screens).",
+            'fr':"Définit un jeu. Le jeu peut être défini soit par le texte qu'il contient, soit par une succession de scènes (niveaux ou écrans).",
         },
     },
     level:{
@@ -85,7 +85,7 @@ moteSchema.keywords = {
             value:'deadly',
             localization:{
                 en:'deadly',
-                fr:'mortem'
+                fr:'mortel'
             }
         },
         {
@@ -207,6 +207,7 @@ moteSchema.rules = {
     },
     controls:{
         default: "platformer",
+        keywords:'controls',
         validation: moteSchema.validations.controlsKeyword,
         localization:{
             en:"controls",
@@ -225,20 +226,21 @@ moteSchema.rules = {
             fr:"caractere_par_defaut",
         },
         doc:{
-            en:"Caractère à placer là où il n'y en a pas.",
-            fr:"Character to be placed where there is none.",
+            en:"Character to be placed where there is none.",
+            fr:"Caractère à placer là où il n'y en a pas.",
         }
     },
     default_type:{
         default: "solid",
+        keywords: "type",
         validation: moteSchema.validations.typeKeyword,
         localization:{
             en:"default_type",
             fr:"type_par_defaut",
         },
         doc:{
-            en:"Type à attribuer aux caractères qui ne sont définis dans aucune règle.",
-            fr:"Type to assign to characters that are not defined in any rule.",
+            en:"Type to assign to characters that are not defined in any rule.",
+            fr:"Type à attribuer aux caractères qui ne sont définis dans aucune règle.",
         }
     },
     goal:{
@@ -327,6 +329,7 @@ moteSchema.rules = {
     },
     win_on_first_goal:{
         default: "false",
+        keywords:'boolean',
         validation: moteSchema.validations.booleanKeyword,
         localization:{
             en:"win_on_first_goal",
@@ -339,6 +342,7 @@ moteSchema.rules = {
     },
     lose_on_first_death:{
         default: "false",
+        keywords:'boolean',
         validation: moteSchema.validations.booleanKeyword,
         localization:{
             en:"lose_on_first_death",

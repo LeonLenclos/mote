@@ -21,7 +21,7 @@ class Game {
 
     // Get the game element
     const gameElement = xmlDoc.documentElement
-    let gameElementLocalization = moteSchema.elements.game.localization
+    let gameElementLocalization = moteSchema.tags.game.localization
     
     // Deduce the location from the game element
     let localization = Object.keys(gameElementLocalization).find(k=>gameElementLocalization[k]==gameElement.tagName);
@@ -35,7 +35,7 @@ class Game {
       game.addLevel({}, gameElement.textContent)
     }
     for (let scene of gameElement.children) {
-      let sceneType = Object.keys(moteSchema.elements).find(k=>moteSchema.elements[k].localization[localization]==scene.tagName);
+      let sceneType = Object.keys(moteSchema.tags).find(k=>moteSchema.tags[k].localization[localization]==scene.tagName);
       if(sceneType == 'level'){
         let ruleSet = Game.ruleSetFromElement(scene, localization);
         game.addLevel(ruleSet, scene.textContent)
