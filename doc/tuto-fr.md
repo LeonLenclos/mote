@@ -227,10 +227,10 @@ mortel="\/|"
 `titre` n'est pas la seule règle que l'on peut renseigner, il y en a en fait un paquet ! Ici nous nous intéressons aux règles de caractère qui servent à définir quel caractère représente chaque élément du jeu :
 
 - la règle `joueur` pour le ou les caractères qui représentent le joueur.
-- la règle `objectif` pour le ou les caractères qui représentent le but.
+- la règle `objectif` pour le ou les caractères qui représentent l'objectif.
 - la règle `mortel` pour le ou les caractères qui représentent les éléments mortels.
 
-On peut indiquer plusieurs caractères dans la valeur de la règle pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléments mortels (`mortel`) : `/`, `\` et `|`.
+On peut indiquer plusieurs caractères dans la valeur de la règle pour indiquer des variantes. Dans cet exemple, trois caractères peuvent représenter les éléments mortels : `/`, `\` et `|`.
 
 
 ### L'auteur
@@ -285,7 +285,7 @@ Avec la règle `auteur`, j'indique mon nom ou mon pseudo. Ce nom s'affichera à 
 
 ## Le mode **coder** en détail
 
-- Parfois des erreurs apparaissent sur fond rouge lorsque l'on veut passer en mode **tester** et que le jeu détecte des erreurs dans le code. Essayez par exemple d'écrire `<jue>` au lieu de `<jeu>` et de cliquer sur **tester**, vous devriez voir apparaitre une erreur.
+- Parfois des erreurs apparaissent sur fond rouge lorsque l'on veut passer en mode **tester**. C'est qu'il y a un problème dans votre code ! Essayez par exemple d'écrire `<jue>` au lieu de `<jeu>` et de cliquer sur **tester**, vous devriez voir apparaitre une erreur.
 - l'option **montrer les invisibles** en bas à gauche permet d'afficher les caractères invisibles par exemple les espaces.
 - Le bouton **sauver XML** permet d'enregistrer le code dans un fichier xml. Il est important de sauver régulièrement pour être sûr de ne pas perdre son travail !
 - Le bouton **importer XML** permet d'importer le code contenu dans un fichier xml
@@ -337,7 +337,7 @@ BRAVO !
 
 L'exemple ci-dessus montre ce qu'il se passe quand il y a plusieurs joueurs ou plusieurs buts. Des joueurs peuvent mourir ou des buts être atteint, dans les deux cas, le niveau continue tant qu'il en reste.
 
-### Aucun but ou joueur
+### Aucun objectif ou joueur
 
 
 ```xml
@@ -351,8 +351,8 @@ L'exemple ci-dessus montre ce qu'il se passe quand il y a plusieurs joueurs ou p
 </jeu>
 ```
 
-L'exemple ci-dessus montre ce qu'il se passe s'il n'y a aucun but ou aucun joueur.
-- quand il n'y a aucun but : le niveau est gagné automatiquement avant même que l'on puisse jouer. On passe au niveau suivant.
+L'exemple ci-dessus montre ce qu'il se passe s'il n'y a aucun objectif ou aucun joueur.
+- quand il n'y a aucun objectif : le niveau est gagné automatiquement avant même que l'on puisse jouer. On passe au niveau suivant.
 - quand il n'y a aucun joueur : le niveau est perdu automatiquement avant même que l'on puisse jouer. On recommence le niveau encore et encore.
 
 ### Règles de condition de victoire et de défaire
@@ -391,7 +391,7 @@ Les règles `victoire_au_premier_objectif` et `defaite_a_la_premiere_mort` perme
 
 Elles peuvent prendre la valeur de `"vrai"` ou `"faux"`.
 
-- `victoire_au_premier_objectif` : si la valeur de cette règle est `"vrai"`, le niveau sera gagné dès que le premier but sera atteint.
+- `victoire_au_premier_objectif` : si la valeur de cette règle est `"vrai"`, le niveau sera gagné dès que le premier objectif sera atteint.
 - `defaite_a_la_premiere_mort` : si la valeur de cette règle est `"vrai"`, le niveau sera perdu dès que le premier joueur mourra.
 
 Par défaut, la valeur de ces règles est `"faux"`
@@ -425,7 +425,7 @@ La taille d'un niveau dépend de sa définition.
 - La hauteur d'un niveau est définie par le nombre de ligne dans la définition
 - La largeur d'un niveau est définie par le nombre de caractère dans la plus longue ligne de la définition
 
-Lors du calcul de la largeur du niveau, on prend en compte les espaces. Il peut être difficile de travailler avec les espaces, car ils sont par définition invisibles. Pour cette raison il peut être utile de cocher la case *Show invisibles*. Cette option permet d'afficher les caractères invisibles et donc notamment de voir les espaces.
+Lors du calcul de la largeur du niveau, on prend en compte les espaces. Il peut être difficile de travailler avec les espaces, car ils sont par définition invisibles. Pour cette raison il peut être utile de cocher la case *montrer les invisibles*. Cette option permet d'afficher les caractères invisibles et donc notamment de voir les espaces.
 
 ### Grandes tailles
 
@@ -573,11 +573,11 @@ Toutes les règles peuvent être définies localement (dans un `<niveau>`), glob
 
 ## Les caractères plus en détail
 
-On a déjà vu plus tôt les règles `joueur`, `objectif` et `mortel` qui permettent de définir le ou les caractères représentant joueurs, buts et éléments mortels. Il existe deux autres type de caractère, `solide` et `air`, qui disposent eux aussi d'une règle. Enfin, il existe deux règles (`caractere_par_defaut` et `type_par_defaut`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
+On a déjà vu plus tôt les règles `joueur`, `objectif` et `mortel`. Il existe deux autres type de caractère, `solide` et `air`, qui disposent eux aussi d'une règle. Enfin, il existe deux règles (`caractere_par_defaut` et `type_par_defaut`) qui ne définissent pas un type de caractère mais qui influencent la manière dont les caractères sont pris en charge par le jeu.
 
 
 - `joueur` : (valeur par défaut : `"@"`) définit le ou les caractères qui représentent le joueur.
-- `objectif` :  (valeur par défaut : `"?"`) définit le ou les caractères qui représentent le but.
+- `objectif` :  (valeur par défaut : `"?"`) définit le ou les caractères qui représentent l'objectif.
 - `mortel` :  (valeur par défaut : `"^"`) définit le ou les caractères qui représentent les éléments mortels.
 - `solide` :  (valeur par défaut : `""`) définit le ou les caractères qui représentent les éléments solides.
 - `air` : (valeur par défaut : `" "`) définit le ou les caractères qui représentent l'air.
@@ -612,7 +612,7 @@ Notez que derrière le joueur et les buts, le jeu place automatiquement un carac
 <jeu>
 <niveau
 type_par_defaut="objectif"
-titre="tout est le but"
+titre="tout est objectif"
 >
 
   par exemple ?  
@@ -654,7 +654,7 @@ bravo !
 </jeu>
 ```
 
-En temps normal, un caractère qui n'est défini dans aucune règle est considéré comme un élément solide (`solide`). Ici, on indique que les caractères qui ne sont pas défini doivent être considérés comme un but (`objectif`), un joueur (`joueur`), un élément mortel (`mortel`), ou de l'air (`air`).
+En temps normal, un caractère qui n'est défini dans aucune règle est considéré comme un élément `solide`. Ici, on indique que les caractères qui ne sont pas défini doivent être considérés comme un `objectif`, un `joueur`, un élément `mortel`, ou de l'`air`.
 
 ### choisir un différent caractère par défaut
 
@@ -789,10 +789,10 @@ Pour que le joueur soit représenté par `<`, je dois échapper le caractère da
 Il est possible de modifier la physique du jeu nous allons voir des règles qui définissent la gravité, la force du joueur, et la gestion des sauts.
 
 
-- `gravite` : (valeur par défaut : 0.6) la gravité du monde dans lequel le joueur évolue. Avec une gravité de `0`, le joueur ne retombera pas après avoir sauté. Si la gravité est plus grande que la force de saut (`force_du_saut`) du joueur, le joueur ne pourra pas sauter.
+- `gravite` : (valeur par défaut : 0.6) la gravité du monde dans lequel le joueur évolue. Avec une gravité de `0`, le joueur ne retombera pas après avoir sauté. Si la gravité est plus grande que la `force_du_saut` du joueur, le joueur ne pourra pas sauter.
 - `force_du_saut` : (valeur par défaut : 1) la force de saut du joueur. Plus elle est grande, plus le joueur saute haut. Encore une fois, cette valeur doit être supérieur à la valeur de `gravite` pour que le joueur puisse sauter.
 - `force_du_deplacement` : (valeur par défaut : 1) la force de déplacement du joueur. Plus elle est basse, plus le joueur mettra du temps à atteindre sa vitesse maximale. Avec une valeur de 1, la vitesse maximale est directement atteinte. (n.b. La vitesse maximale ne peut pas être modifiée)
-- `freinage` : (valeur par défaut : 1) le freinage. Avec une valeur de 1, le joueur arrête de se déplacer dès que l'on relâche la touche de déplacement. Avec une valeur de 0, le joueur ne s'arrête pas, comme s'il était sur de la glace. Différentes valeurs entre 0 et 1 donnent la sensation de sols plus ou moins glissant.
+- `freinage` : (valeur par défaut : 1) Avec une valeur de 1, le joueur arrête de se déplacer dès que l'on relâche la touche de déplacement. Avec une valeur de 0, le joueur ne s'arrête pas, comme s'il était sur de la glace. Différentes valeurs entre 0 et 1 donnent la sensation de sols plus ou moins glissant.
 - `temps_du_saut` : (valeur par défaut : 0.2) pendant combien de temps (en seconde) la force du saut s'exerce si on reste appuyé sur la touche du saut. Cela permet que l'on puisse sauter plus ou moins haut selon que l'on appuie plus ou moins longtemps sur la touche du saut.
 - `temps_coyote` : (valeur par défaut : 0.2) pendant combien de temps (en seconde) le joueur peut encore sauter après avoir dépassé le seuil d'une plateforme. Cela permet de donner la sensation à l'utilisateur de ne pas avoir raté un saut de manière injuste quand il se déplace sur des petites plateformes.
 - `temps_du_saut_tampon` : (valeur par défaut : 0.2) combien de temps avant d'attérir (en seconde) on peut commencer à appuyer sur la touche saut pour sauter à nouveau. Cela permet d'enchaîner les sauts rapidement sans avoir besoin d'être précis comme un robot.
