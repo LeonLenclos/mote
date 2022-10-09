@@ -25,6 +25,4 @@ DEFAULT_RULE_SET = {
   bg2_color:"#000000",
 };
 
-DEFAULT_GAME = `<game>
-
-</game>`;
+DEFAULT_GAME = ``;

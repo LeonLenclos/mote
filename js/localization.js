@@ -35,6 +35,14 @@ let editorLocalization = {
         en:'Default value: ',
         fr:'Valeur par défaut : '
     },
+    sample_game:{
+        en:`<game>
+
+</game>`,
+        fr:`<jeu>
+
+</jeu>`,
+    }
 
 }
 
