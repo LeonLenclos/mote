@@ -3,5 +3,6 @@
 Mote is a text mode game engine
 
 - [mote](..)
-- [Tutoriel en français](tutoriel.md)
+- [Tutoriel en français](tuto-fr.md)
+- [Tutorial in English](tuto-en.md)
 
