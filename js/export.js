@@ -41,7 +41,7 @@ function exportStandAlone(data, title){
   const serializer = new XMLSerializer();
   let output = serializer.serializeToString(doc)
   output = formatString(output, sources)
-  output = formatString(output, {title:'TYPO !', gamedata:data})
+  output = formatString(output, {title:title, gamedata:data})
   download(output, title, 'html');
   return doc
 }

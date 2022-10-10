@@ -33,7 +33,11 @@ const app = createApp({
       this.errorMessage = e;
     },
     exportStandAlone(){
-      exportStandAlone(this.code, 'mote')
+      try {
+        exportStandAlone(this.code, 'mote')
+      } catch (e) {
+        alert(this.localize('export_failed'))
+      }
     },
     exportXML(){
       exportXML(this.code, 'mote')

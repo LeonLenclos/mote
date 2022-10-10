@@ -35,6 +35,10 @@ let editorLocalization = {
         en:'Default value: ',
         fr:'Valeur par défaut : '
     },
+    export_failed:{
+        en:"Oops! The export failed (n.b. This service is not available if you use mote locally without a server).",
+        fr:"Oups ! L’exportation a échoué (n.b. Ce service n'est pas disponnible si vous utilisez mote en local sans server.)"
+    },
     sample_game:{
         en:`<game>
 
