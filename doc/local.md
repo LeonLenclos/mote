@@ -7,7 +7,7 @@ Pour utiliser mote sans connexion internet
 3. Ouvrez ce dossier (n.b tout le contenu du dossier est important et aucun fichier ne doit être modifié, supprimé ou déplacé du dossier)
 4. Faites clic-droit sur le fichier nommé **index.html** et choisissez **Ouvrir avec > Firefox** ou **Ouvrir avec > Google Chrome**
 
-# Limitations
+# Limitations
 
 Seule limitation connue pour l'instant : la fonction **Exporter mon jeu** ne fonctionne pas quand mote est utilisé sans serveur.
 
