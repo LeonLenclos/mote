@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="fr"><head>
+    <meta charset="utf-8" />
+    <title>mote</title>
+    <style>
+    body,html{
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    </style>
+    <style>{https://fonts.googleapis.com/css?family=Roboto+Mono}</style>
+    <style>
+#mote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+
+#mote {
+
+  background: var(--bg2);
+}
+
+#mote #game {
+  background: var(--bg);
+  color: var(--fg);
+  border:1px solid var(--fg2);
+  font-family:'Roboto Mono', monospace;
+  font-size: 15px;
+}
+
+#mote #game header{
+  border-bottom: 1px solid var(--fg2);
+  display: flex;
+  flex-direction:row;
+}
+#mote #game header * {
+    padding: 2px;
+}
+
+#mote #game header #title {
+  flex-grow: 1;
+}
+
+#mote #game header #author {
+    border-left: 1px solid var(--fg2);
+}
+
+#mote #game[data-localization=en] header #author:before {
+  content:'by ';
+}
+
+#mote #game[data-localization=fr] header #author:before {
+  content:'par ';
+}
+
+#mote #game header #author:before {
+  color: var(--fg2);
+}
+
+#mote #game main {
+    background: var(--bg2);
+
+  display: flex;
+  justify-content:center;
+
+}
+#mote #scene{
+  background: var(--bg);
+  padding:2px;
+  margin:0;
+}
+
+#mote #scene span{
+  display: inline-block;
+  width:9px;
+  height: 18px;
+}
+</style>
+    <script>let moteSchema = {};
+
+moteSchema.tags = {
+    game:{
+        localization:{
+            'en':'game',
+            'fr':'jeu',
+        },
+        doc:{
+            'en':"Defines a game. The game can either be defined by the text it contains, or by a sequence of scenes (levels or screens).",
+            'fr':"Définit un jeu. Le jeu peut être défini soit par le texte qu'il contient, soit par une succession de scènes (niveaux ou écrans).",
+        },
+    },
+    level:{
+        localization:{
+            'en':'level',
+            'fr':'niveau',
+        },
+        doc:{
+            'en':"Defines a level. The level is defined by the text it contains. A level is a scene that you can play, if you lose you start again, if you win you go to the next scene.",
+            'fr':"Définit un niveau. Le niveau est défini par le texte qu'il contient. Un niveau est une scène que l'on peut jouer, si on perd on recommence, si on gagne on passe à la scène suivante.",
+        },
+    },
+    screen:{
+        localization:{
+            'en':'screen',
+            'fr':'ecran',
+        },
+        doc:{
+            'en':"Defines a screen. The screen is defined by the text it contains. A screen is a scene that is not playable and that can be skipped by pressing a key.",
+            'fr':"Définit un écran. L'écran est défini par le texte qu'il contient. Un écran est une scène qui n'est pas jouable et qui peut être sautée en appuyant sur une touche.",
+        },
+    },
+};
+
+moteSchema.keywords = {
+    controls:[
+        {
+            value:'platformer',
+            localization:{
+                en:'platformer',
+                fr:'plateformes'
+            }
+        },
+        {
+            value:'adventure',
+            localization:{
+                en:'adventure',
+                fr:'aventure'
+            }
+        },
+    ],
+    boolean:[
+        {
+            value:true,
+            localization:{
+                en:'true',
+                fr:'vrai'
+            }
+        },
+        {
+            value:false,
+            localization:{
+                en:'false',
+                fr:'faux'
+            }
+        },
+    ],
+    type:[
+        {
+            value:'solid',
+            localization:{
+                en:'solid',
+                fr:'solide'
+            }
+        },
+        {
+            value:'air',
+            localization:{
+                en:'air',
+                fr:'air'
+            }
+        },
+        {
+            value:'deadly',
+            localization:{
+                en:'deadly',
+                fr:'mortel'
+            }
+        },
+        {
+            value:'player',
+            localization:{
+                en:'player',
+                fr:'joueur'
+            }
+        },
+        {
+            value:'goal',
+            localization:{
+                en:'goal',
+                fr:'objectif'
+            }
+        },
+    ],
+};
+
+moteSchema.validations = {
+    zeroOrMoreChar:{
+        process:(value)=>value,
+        test:(value)=>true,
+        description:{
+            en:"Must contain zero or more characters.",
+            fr:"Doit contenir zéro caractères ou plus.",
+        }
+    },
+    oneOrMoreChar:{
+        process:(value)=>value,
+        test:(value)=>value.length > 0,
+        description:{
+            en:"Must contain one or more characters.",
+            fr:"Doit contenir un caractères ou plus.",
+        }
+    },
+    controlsKeyword:{
+        process:(value)=>moteSchema.keywords.controls.find(kw=>Object.values(kw.localization).includes(value)).value,
+        test:(value)=>moteSchema.keywords.controls.some(kw=>Object.values(kw.localization).includes(value)),
+        description:{
+            en:"Must have one of these values : " + moteSchema.keywords.controls.map(kw=> kw.localization.en).join(', '),
+            fr:"Doit avoir une de ces valeurs : " + moteSchema.keywords.controls.map(kw=> kw.localization.fr).join(', '),
+        }
+    },
+    typeKeyword:{
+        process:(value)=>moteSchema.keywords.type.find(kw=>Object.values(kw.localization).includes(value)).value,
+        test:(value)=>moteSchema.keywords.type.some(kw=>Object.values(kw.localization).includes(value)),
+        description:{
+            en:"Must have one of these values : " + moteSchema.keywords.type.map(kw=> kw.localization.en).join(', '),
+            fr:"Doit avoir une de ces valeurs : " + moteSchema.keywords.type.map(kw=> kw.localization.fr).join(', '),
+        }
+    },
+    booleanKeyword:{
+        process:(value)=>moteSchema.keywords.boolean.find(kw=>Object.values(kw.localization).includes(value)).value,
+        test:(value)=>moteSchema.keywords.boolean.some(kw=>Object.values(kw.localization).includes(value)),
+        description:{
+            en:"Must have one of these values : " + moteSchema.keywords.boolean.map(kw=> kw.localization.en).join(', '),
+            fr:"Doit avoir une de ces valeurs : " + moteSchema.keywords.boolean.map(kw=> kw.localization.fr).join(', '),
+        }
+    },
+    positiveInt:{
+        process:(value)=>parseFloat(value),
+        test:(value)=>Number.isInteger(parseFloat(value)) && parseFloat(value) > 0,
+        description:{
+            en:"Must be a positive integer.",
+            fr:"Doit être un nombre entier positif.",
+        }
+    },
+    float:{
+        process:(value)=>parseFloat(value),
+        test:(value)=>!isNaN(parseFloat(value)),
+        description:{
+            en:"Must be a number.",
+            fr:"Doit être un nombre.",
+        }
+    },
+    string:{
+        process:(value)=>value,
+        test:(value)=>true,
+        description:{
+            en:"Must be text.",
+            fr:"Doit être du texte.",
+        }
+    },
+    color:{
+        process:(value)=>value,
+        test:(value)=>value.mach(/^#[0-9A-F]{6}$/i),
+        description:{
+            en:"Must be a hexadecimal color code.",
+            fr:"Doit être un code couleur hexadécimal.",
+        }
+    },
+};
+
+moteSchema.rules = {
+    air:{
+        default: " ",
+        validation: moteSchema.validations.zeroOrMoreChar,
+        localization:{
+            en:"air",
+            fr:"air",
+        },
+        doc:{
+            en:"Character that represents the air.",
+            fr:"Caractère qui représentent l'air.",
+        }
+    },
+    author:{
+        default: "",
+        validation: moteSchema.validations.string,
+        localization:{
+            en:"author",
+            fr:"auteur",
+        },
+        doc:{
+            en:"Name of the person who created the game.",
+            fr:"Nom de la personne qui a créé le jeu.",
+        }
+    },
+    controls:{
+        default: "platformer",
+        keywords:'controls',
+        validation: moteSchema.validations.controlsKeyword,
+        localization:{
+            en:"controls",
+            fr:"controles",
+        },
+        doc:{
+            en:"[experimental]",
+            fr:"[experimental]",
+        }
+    },
+    default_char:{
+        default: " ",
+        validation: moteSchema.validations.oneOrMoreChar,
+        localization:{
+            en:"default_char",
+            fr:"caractere_par_defaut",
+        },
+        doc:{
+            en:"Character to be placed where there is none.",
+            fr:"Caractère à placer là où il n'y en a pas.",
+        }
+    },
+    default_type:{
+        default: "solid",
+        keywords: "type",
+        validation: moteSchema.validations.typeKeyword,
+        localization:{
+            en:"default_type",
+            fr:"type_par_defaut",
+        },
+        doc:{
+            en:"Type to assign to characters that are not defined in any rule.",
+            fr:"Type à attribuer aux caractères qui ne sont définis dans aucune règle.",
+        }
+    },
+    goal:{
+        default: "?",
+        validation: moteSchema.validations.zeroOrMoreChar,
+        localization:{
+            en:"goal",
+            fr:"objectif",
+        },
+        doc:{
+            en:"Character that represents the goals.",
+            fr:"Caractère qui représentent les objectifs.",
+        }
+    },
+    deadly:{
+        default: "^",
+        validation: moteSchema.validations.zeroOrMoreChar,
+        localization:{
+            en:"deadly",
+            fr:"mortel",
+        },
+        doc:{
+            en:"Character that represents the deadly elements.",
+            fr:"Caractère qui représentent les éléments mortels.",
+        }
+    },
+    max_height:{
+        default: "30",
+        validation: moteSchema.validations.positiveInt,
+        localization:{
+            en:"max_height",
+            fr:"hauteur_max",
+        },
+        doc:{
+            en:"The maximum height of the window.",
+            fr:"La hauteur maximum de la fenêtre.",
+        }
+    },
+    max_width:{
+        default: "80",
+        validation: moteSchema.validations.positiveInt,
+        localization:{
+            en:"max_width",
+            fr:"largeur_max",
+        },
+        doc:{
+            en:"The maximum width of the window.",
+            fr:"La hauteur largeur de la fenêtre.",
+        }
+    },
+    player:{
+        default: "@",
+        validation: moteSchema.validations.zeroOrMoreChar,
+        localization:{
+            en:"player",
+            fr:"joueur",
+        },
+        doc:{
+            en:"Character that represents the player.",
+            fr:"Caractère qui représentent le joueur.",
+        }
+    },
+    solid:{
+        default: "",
+        validation: moteSchema.validations.zeroOrMoreChar,
+        localization:{
+            en:"solid",
+            fr:"solide",
+        },
+        doc:{
+            en:"Character that represents the solid elements.",
+            fr:"Caractère qui représentent les éléments solides.",
+        }
+    },
+    title:{
+        default: "untitled",
+        validation: moteSchema.validations.string,
+        localization:{
+            en:"title",
+            fr:"titre",
+        },
+        doc:{
+            en:"Game title.",
+            fr:"Titre du jeu.",
+        }
+    },
+    win_on_first_goal:{
+        default: "false",
+        keywords:'boolean',
+        validation: moteSchema.validations.booleanKeyword,
+        localization:{
+            en:"win_on_first_goal",
+            fr:"victoire_au_premier_objectif",
+        },
+        doc:{
+            en:"Win the level as soon as a goal is reached (without the necessity to reach all of them).",
+            fr:"Gagner le niveau dès qu'un objectif est atteint (sans avoir besoin de tous les atteindre).",
+        }
+    },
+    lose_on_first_death:{
+        default: "false",
+        keywords:'boolean',
+        validation: moteSchema.validations.booleanKeyword,
+        localization:{
+            en:"lose_on_first_death",
+            fr:"defaite_a_la_premiere_mort",
+        },
+        doc:{
+            en:"Lose the level as soon as a player is dead (without waiting for them all to die).",
+            fr:"Perdre le niveau dès qu'un joueur est mort (sans attendre qu'ils soient tous morts).",
+        }
+    },
+    braking:{
+        default: 1,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"braking",
+            fr:"freinage",
+        },
+        doc:{
+            en:"Braking force. Different values between 0 and 1 give the feeling of a more or less slippery floor.",
+            fr:"Force de freinage. Différentes valeurs entre 0 et 1 donnent la sensation d'un sol plus ou moins glissant.",
+        }
+    },
+    gravity:{
+        default: 0.6,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"gravity",
+            fr:"gravite",
+        },
+        doc:{
+            en:"Gravity force. With a gravity of 0, the player will not fall back after jumping. If the gravity is greater than the jump force, the player will not be able to jump.",
+            fr:"Force de gravité. Avec une gravité de 0, le joueur ne retombera pas après avoir sauté. Si la gravité est plus grande que la force de saut, le joueur ne pourra pas sauter.",
+        }
+    },
+    jump_force:{
+        default: 1,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"jump_force",
+            fr:"force_du_saut",
+        },
+        doc:{
+            en:"Jump force. The higher the value, the higher the player jumps.",
+            fr:"Force de saut. Plus la valeur est grande, plus le joueur saute haut.",
+        }
+    },
+    move_force:{
+        default: 1,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"move_force",
+            fr:"force_du_deplacement",
+        },
+        doc:{
+            en:"Move force. The lower the value, the longer it takes the player to reach the maximum speed. With a value of 1, the maximum speed is reached immediately.",
+            fr:"Force de déplacement. Plus elle est basse, plus le joueur met du temps à atteindre sa vitesse maximale. Avec une valeur de 1, la vitesse maximale est immédiatement atteinte.",
+        }
+    },
+    jump_time:{
+        default: 0.2,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"jump_time",
+            fr:"temps_du_saut",
+        },
+        doc:{
+            en:"Jump time (in seconds). How long the jump force is applied if the jump key is held down. This makes it possible to jump higher or lower depending on how long the jump key is pressed.",
+            fr:"Temps du saut (en secondes). Pendant combien de temps la force du saut s’exerce si on reste appuyé sur la touche du saut. Cela permet que l’on puisse sauter plus ou moins haut selon que l’on appuie plus ou moins longtemps sur la touche du saut.",
+        }
+    },
+    coyote_time:{
+        default: 0.2,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"coyote_time",
+            fr:"temps_coyote",
+        },
+        doc:{
+            en:"Coyote time (in seconds). How long the player can still jump after passing the threshold of a platform.",
+            fr:"Temps coyote (en secondes). Pendant combien de temps le joueur peut encore sauter après avoir dépassé le seuil d’une plateforme.",
+        }
+    },
+    jump_buffer_time:{
+        default: 0.2,
+        validation: moteSchema.validations.float,
+        localization:{
+            en:"jump_buffer_time",
+            fr:"temps_du_saut_tampon",
+        },
+        doc:{
+            en:"Buffer jump time (in seconds). How long before you land you can start pressing the jump key to jump again.",
+            fr:"Temps du saut tampon (en secondes). Combien de temps avant d’atterrir on peut commencer à appuyer sur la touche saut pour sauter à nouveau.",
+        }
+    },
+    fg_color:{
+        default:"#e0e0e0",
+        validation: moteSchema.validations.color,
+        localization:{
+            en:"fg_color",
+            fr:"couleur_pp",
+        },
+        doc:{
+            en:"Foreground color.",
+            fr:"Couleur du premier plan.",
+        }
+    },
+    fg2_color:{
+        default:"#808080",
+        validation: moteSchema.validations.color,
+        localization:{
+            en:"fg2_color",
+            fr:"couleur_pp2",
+        },
+        doc:{
+            en:"Secondary foreground color.",
+            fr:"Couleur secondaire du premier plan.",
+        }
+    },
+    bg_color:{
+        default:"#202020",
+        validation: moteSchema.validations.color,
+        localization:{
+            en:"bg_color",
+            fr:"couleur_ap",
+        },
+        doc:{
+            en:"Background color.",
+            fr:"Couleur de l'arrière-plan",
+        }
+    },
+    bg2_color:{
+        default:"#000000",
+        validation: moteSchema.validations.color,
+        localization:{
+            en:"bg2_color",
+            fr:"couleur_ap2",
+        },
+        doc:{
+            en:"Secondary background color.",
+            fr:"Couleur secondaire de l'arrière-plan",
+        }
+    },
+};
+</script>
+    <script>// A simple 2D vector class
+
+
+//shortcut
+const V = (x, y) => new Vector(x,y);
+
+class Vector {
+	constructor(x,y){
+		this.x = x || 0;
+		this.y = y || 0;
+	}
+
+	toString() {
+		return "(" + this.x + ", " + this.y + ")";
+	}
+
+	add(vector) {
+		return new Vector(this.x + vector.x, this.y + vector.y);
+	}
+
+	subtract(vector) {
+		return this.add(vector.negate());
+	}
+
+	negate() {
+		return new Vector(-this.x, -this.y);
+	}
+
+	dot(vector) {
+		return this.x * vector.x + this.y * vector.y;
+	}
+
+	length() {
+		return Math.sqrt(this.dot(this));
+	}
+
+	multiply(scalar) {
+		return new Vector(this.x * scalar, this.y * scalar);
+	}
+
+	divide(scalar) {
+		if(scalar == 0)
+			return new Vector(0, 0);
+		else
+			return this.multiply(1 / scalar);
+	}
+
+	normalize() {
+		return this.divide(this.length());
+	}
+
+	angle() {
+		return Math.atan2(this.y, this.x);
+	}
+
+	rotate(a) {
+	  return this.fromAngle(a+this.angle(), this.length());
+	};
+
+	fromAngle(angle, length = 1) {
+		return new Vector(Math.cos(angle) * length, Math.sin(angle) * length);
+	}
+
+	constrainLength(length) {
+		return this.normalize().multiply(Math.min(this.length(), length)
+		);
+	}
+
+	constrain(min, max) {
+		return new Vector(
+			Math.min(Math.max(this.x, min.x), max.x),
+			Math.min(Math.max(this.y, min.y), max.y)
+		);
+	}
+
+	floor(){
+		return new Vector(Math.floor(this.x), Math.floor(this.y));
+	}
+
+	ceil(){
+		return new Vector(Math.ceil(this.x), Math.ceil(this.y));
+	}
+
+	sqdist(vector){
+		return (this.x - vector.x)**2 + (this.y - vector.y)**2
+	}
+}
+</script>
+    <script>class TagError extends Error {
+  constructor(tag, role, acceptedTags, localization) {
+    let tagList = acceptedTags.map(t=>`<${t}>`)
+    super(`<${tag}> is not a valid ${role} tag name. ${role} tag name must be: ${tagList.join(' or ')}`);
+    this.name = "DocumentNodeTagError";
+  }
+}
+
+class SceneTagError extends TagError {
+  constructor(tag, localization) {
+    super(tag, 'scene', ['level', 'screen'], localization);
+    this.name = "DocumentNodeTagError";
+  }
+}
+
+class DocumentNodeTagError extends TagError {
+  constructor(tag, localization) {
+    super(tag, 'document node', ['game'], localization);
+    this.name = "DocumentNodeTagError";
+  }
+}
+
+class EmptyGameError extends Error {
+  constructor(localization) {
+    super("The game is empty");
+    this.name = "EmptyGameError";
+  }
+}
+
+class RuleValueError extends Error {
+  constructor(rule, value, localization) {
+    super(`${value} is not a valid value for ${rule}`);
+    this.name = "RuleValueError";
+  }
+}
+
+class RuleNameError extends Error {
+  constructor(name, localization) {
+    super(`${name} is not a valid rule name`);
+    this.name = "RuleNameError";
+  }
+}
+
+class ParserError extends Error {
+  constructor(msg, localization) {
+    super(msg);
+    this.name = "ParserError";
+  }
+}
+</script>
+    <script>
+class Entity {
+  constructor(scene, char, type, x, y){
+    this.scene = scene;
+    this.char = char;
+    this.type = type;
+    this.pos = V(x, y)
+  }
+
+  static fromChar(scene, char, x, y){
+    // Find entity type for the char
+    const entityTypes = ['player', 'air', 'deadly', 'solid', 'goal'];
+    let entityType = scene.game.getRule('default_type');
+    for (let type of entityTypes) {
+      console.log(type, scene.game.getRule(type))
+      if (scene.game.getRule(type).includes(char)) {
+        entityType = type;
+        break;
+      }
+    }
+
+    if (entityType == 'player') {
+      return new Player(scene, char, entityType, x, y)
+    }
+    return new Entity(scene, char, entityType, x, y)
+  }
+
+  get x() {return this.pos.x;}
+
+  get y() {return this.pos.y;}
+
+  get isSolid() {return this.type == 'solid' || this.type == 'player';}
+
+  toHTML(){
+    let node = document.createElement('span');
+    node.innerHTML = this.char;
+    // let node = document.createTextNode(this.char);
+    return node;
+  }
+
+  update(dt){
+  }
+}
+
+
+class Player extends Entity {
+  constructor(scene, char, type, x, y){
+    super(scene, char, type, x, y)
+    //state
+    this.vel = V(0,0);
+    this.acc = V(0,0);
+    this.landed = false;
+    this.jumping = false;
+    this.canJump = false;
+    this.wantToJump = false;
+    // timer
+    this.jumpTimer = 0;
+    this.coyoteTimer = 0;
+    this.jumpBufferTimer = 0;
+    // rules
+    let r = (s) => {return parseFloat(scene.game.getRule(s))};
+    this.jumpForce = V(0,-r('jump_force'));
+    this.moveForce = V(r('move_force'), 0);
+    this.gravity = V(0, r('gravity'));
+    this.braking = r('braking');
+    this.coyoteTime = r('coyote_time');
+    this.jumpTime = r('jump_time');
+    this.jumpBufferTime = r('jump_buffer_time');
+  }
+
+  get x() {return this.pos.floor().x;}
+
+  get y() {return this.pos.floor().y;}
+
+
+  toHTML(){
+    let node = document.createElement('span');
+    node.classList.add('player');
+    node.innerHTML = this.char;
+    return node;
+  }
+  jump() {
+    this.wantToJump = true;
+  }
+
+  moveRight() {
+    this.applyForce(this.moveForce);
+  }
+
+  moveDown() {
+    this.applyForce(this.moveForce.rotate(Math.PI/2));
+  }
+
+  moveLeft() {
+    this.applyForce(this.moveForce.rotate(Math.PI));
+  }
+
+  moveUp() {
+    this.applyForce(this.moveForce.rotate(Math.PI*3/2));
+  }
+
+  applyForce(force) {
+    this.acc = this.acc.add(force);
+  }
+
+  update(dt){
+    // brake
+    if(this.acc.x == 0){
+      // this.applyForce(this.vel.negate().multiply(this.braking))
+      this.applyForce(V(-this.vel.x * this.braking, 0))
+
+    }
+
+
+    // Gravity
+    this.applyForce(this.gravity);
+
+    // Jump buffering
+    if(this.wantToJump && this.jumping){
+      this.jumpBufferTimer += dt;
+    }
+    if (!this.wantToJump) {
+      this.jumpBufferTimer = 0;
+    }
+
+    // Duration of the jump
+    if(this.jumping){
+      this.jumpTimer += dt;
+    } else if(this.landed){
+      this.jumpTimer = 0;
+    }
+
+    //coyote
+    this.coyoteTimer += dt;
+    if (this.landed) {
+      this.coyoteTimer = 0
+    }
+
+
+    let canCoyoteJump = !this.jumping && !this.landed && this.coyoteTimer < this.coyoteTime && this.jumpBufferTimer < this.jumpBufferTime;
+    let canJumpingHigher = this.jumping && this.jumpTimer < this.jumpTime;
+    let canBasicJump = !this.jumping && this.landed && this.jumpBufferTimer < this.jumpBufferTime
+    this.canJump = canCoyoteJump || canJumpingHigher || canBasicJump
+
+    this.jumping = this.wantToJump && this.canJump;
+    this.wantToJump = false;
+
+    if(this.jumping){
+      this.applyForce(this.jumpForce);
+    }
+
+    // update vel
+    this.vel = this.vel.add(this.acc);
+
+    // collision
+    this.landed = (this.scene.solidAt(this.x, this.y+1, this) || this.y == this.scene.size.y-1)
+    && this.vel.y >= 0;
+
+    this.underWall = this.scene.solidAt(this.x, this.y-1, this) && this.vel.y < 0;
+    this.againstWall = (this.scene.solidAt(this.x-1, this.y, this) && this.vel.x < 0)
+    || (this.scene.solidAt(this.x+1, this.y, this) && this.vel.x > 0);
+    if (this.landed || this.underWall){
+      this.vel.y = 0;
+    }
+    if (this.againstWall){
+      this.vel.x = 0;
+    }
+
+    // move
+    let constrainedVel = this.vel.constrain(V(-1, -1),V(1, 1));
+    let escapeDirection = V(1,0)
+    let pos = this.pos.add(constrainedVel);
+
+    // Bounce clip
+    // let bounceClipAttemp = 0
+    // while(constrainedVel.length()>0 && this.scene.solidAt(pos.x, pos.y, this) && bounceClipAttemp < 10) {
+    //   pos = pos.subtract(constrainedVel);
+    //   bounceClipAttemp ++;
+    // }
+
+    // Brutforce clip
+    if(this.scene.solidAt(pos.x, pos.y, this)){
+      let nearestFreePos = undefined;
+      for (let x = 0; x < this.scene.size.x; x++) {
+        for (let y = 0; y < this.scene.size.y; y++) {
+          if(!this.scene.solidAt(x, y, this)){
+            if(!nearestFreePos || pos.sqdist(V(x, y)) < pos.sqdist(nearestFreePos)){
+              nearestFreePos = V(x, y);
+            }
+          }
+        }
+      }
+      console.log(nearestFreePos, pos)
+      pos = nearestFreePos
+    }
+
+
+
+    this.pos = pos
+
+    //constrain in scene
+    this.pos = this.pos.constrain(V(0,0), this.scene.size.subtract(V(1,1)));
+
+    // reset
+    this.acc = V(0,0);
+  }
+}
+</script>
+    <script>class Scene {
+  static ENTERING = 0;
+  static PLAYING = 1;
+  static EXITING = 2;
+  static STOP = 3;
+  static TRANSITION_SPEED = 0.1;
+  // Create a scene.
+  constructor(game, ruleSet, text) {
+    this.game = game;
+    this.ruleSet = ruleSet;
+    
+    //remove first and last line if empty
+    let lines = text.split("\n");
+    if(lines.length>0 && lines[0].length == 0) lines.shift();
+    if(lines.length>0 && lines[lines.length-1].length == 0) lines.pop();
+    this.text = lines.join("\n");
+  }
+
+  toHTML(){
+    let container = document.createElement('pre');
+    container.id = 'scene';
+    let opacity = 1;
+    if(this.state == Scene.ENTERING) opacity = this.transition;
+    if(this.state == Scene.EXITING) opacity = 1-this.transition;
+    container.style.setProperty('opacity', opacity);
+    this.appendContent(container);
+    return container;
+  }
+
+  init(){
+    // Transition props
+    this.state = Scene.ENTERING;
+    this.transition = 0;
+
+    // Style
+    const colors = ['bg', 'bg2', 'fg', 'fg2'];
+    console.log(this.game.container)
+    colors.forEach(c=>{
+      this.game.container.style.setProperty(`--${c}`, this.game.getRule(`${c}_color`));
+    })
+  }
+
+  exit(callback){
+    this.transition = 0;
+    this.state = Scene.EXITING;
+    this.onExit = callback;
+  }
+
+  next(){
+    if(this.game.currentSceneIndex == this.game.scenes.length-1){
+      this.state = Scene.STOP;
+      return;
+    }
+    this.exit(()=>{this.game.nextScene()});
+  }
+
+  reset(){
+    this.exit(()=>{this.game.resetScene()});
+  }
+
+  // update input
+  input(keys){
+    keys.forEach(key => {
+      switch (key) {
+        case "r":
+        this.reset();
+        break;
+      }
+    });
+  }
+
+  update(dt){
+    if(this.state == Scene.STOP){
+      return false;
+    }
+    if(this.state != Scene.PLAYING && this.transition < 1){
+      this.transition += Scene.TRANSITION_SPEED;
+      return false;
+    }
+
+    if(this.state == Scene.ENTERING){
+      this.state = Scene.PLAYING
+    }
+
+    if(this.state == Scene.EXITING){
+      this.onExit();
+    }
+    return true;
+  }
+}
+
+class ScreenScene extends Scene {
+
+  appendContent(container){
+    let lines = this.text.split("\n");
+    lines.forEach(line=>{
+      let chars = line.split("");
+      chars.forEach(char=>{
+        let node = document.createElement('span');
+        node.innerHTML = char;
+        container.appendChild(node);  
+      });
+      container.appendChild(document.createTextNode('\n'));
+    })
+  }
+
+  // update input
+  input(keys){
+    super.input(keys)
+    if(this.state != Scene.PLAYING) return;
+    keys.forEach(key => {
+      switch (key) {
+        case "ArrowRight": case "d":
+        case "ArrowLeft": case "q":
+        case "ArrowDown": case "s":
+        case " ":
+        case "ArrowUp": case "z":
+        this.next();
+      }
+    });
+  }
+}
+
+class LevelScene extends Scene{
+  // Is there something solid at x y coords. ignore ignoreEntity.
+  solidAt(x, y, ignoreEntity){
+    //TODO: add check for scene borders
+    return this.getEntitiesByPos(x,y).find((e)=>e!=ignoreEntity && e.isSolid);
+  }
+
+  // Add en entity to the scene.
+  addEntity(char, x, y){
+    // If no char, replace by defalut char
+    const defaultChar = this.game.getRule('default_char')[0];
+    const airChar = this.game.getRule('air')[0] || defaultChar;
+    char = char || defaultChar;
+
+    // Add entity to entities
+    let entity = Entity.fromChar(this, char, x, y)
+    this.entities.push(entity);
+
+    // If entity is player also add a default char behind.
+    if (entity.type == 'player' || entity.type == 'goal') {
+      this.addEntity(airChar, x, y);
+    }
+  }
+
+  removeEntity(entity){
+    return this.entities.splice(this.entities.indexOf(entity), 1);
+  }
+
+  getEntitiesByPos(x, y) {return this.entities.filter((e)=> e.x == x && e.y == y)}
+
+  getEntitiesByType(type) {return this.entities.filter((e)=> e.type == type)}
+
+  appendContent(container){
+    
+    // Create content grid
+    let contentGrid = Array(this.size.x).fill().map(x => Array(this.size.y).fill())
+    const addEntityTocontentGrid = e => contentGrid[e.x][e.y] = e;
+    this.entities.forEach(addEntityTocontentGrid);
+    this.getEntitiesByType('goal').forEach(addEntityTocontentGrid);
+    this.getEntitiesByType('player').forEach(addEntityTocontentGrid);
+
+    // Compute size and camera
+    let minSize = V(0,0);
+    let maxSize = V(this.game.getRule('max_width'),this.game.getRule('max_height'));
+    let displaySize = this.size.constrain(V(), maxSize);
+
+    let player = this.getEntitiesByType('player')[0];
+    if(player){
+      this.camera = player.pos.floor().subtract(displaySize.divide(2).floor())
+      this.camera = this.camera.constrain(V(0,0), this.size.subtract(displaySize));
+    }
+
+    // append grid to container
+    let from = this.camera;
+    let to = this.camera.add(displaySize);
+    for (let y = from.y; y < to.y; y++) {
+      for (let x = from.x; x < to.x; x++) {
+        if(contentGrid[x] && contentGrid[x][y] instanceof Entity){
+          container.appendChild(contentGrid[x][y].toHTML());
+        }
+      }
+      container.appendChild(document.createTextNode('\n'));
+    }
+  }
+
+  init(){
+    super.init()
+
+    // The world (each lines in an array of strings)
+    let lines = this.text.split("\n");
+
+    // Size
+    this.size = V()
+    this.size.x = lines.reduce((p, c)=>{return Math.max(p, c.length)}, 0);
+    this.size.y = lines.length;
+    this.camera = V();
+
+    // Create entities
+    this.entities = [];
+    for (var y = 0; y < this.size.y; y++) {
+      for (var x = 0; x < this.size.x; x++) {
+        this.addEntity(lines[y][x], x, y);
+      }
+    }
+
+    // Victory and defeat condition
+    this.min_goals = 0;
+    this.min_players = 0;
+    if(this.game.getRule('win_on_first_goal')){
+      this.min_goals = this.getEntitiesByType('goal').length -1;
+    }
+    if(this.game.getRule('lose_on_first_death')){
+      this.min_players = this.getEntitiesByType('player').length -1;
+    }
+    
+
+  }
+
+    // update input
+    input(keys){
+      super.input(keys)
+    if(this.state != Scene.PLAYING) return;
+    let players = this.getEntitiesByType('player');
+      keys.forEach(key => {
+        switch (key) {
+          case "ArrowRight": case "d":
+          players.forEach(p => p.moveRight());
+          break;
+          case "ArrowLeft": case "q":
+          players.forEach(p => p.moveLeft());
+          break;
+          case "ArrowDown": case "s":
+          if (this.game.getRule('controls')=="adventure") {
+            players.forEach(p => p.moveDown());
+          }
+          break;
+          case " ":
+          if (this.game.getRule('controls')=="adventure") {
+            break;
+          }
+          case "ArrowUp": case "z":
+          if (this.game.getRule('controls')=="platformer") {
+            players.forEach(p => p.jump());
+          }
+          if (this.game.getRule('controls')=="adventure") {
+            players.forEach(p => p.moveUp());
+          }
+        }
+      });
+    }
+  
+
+  update(dt){
+    let updating = super.update(dt)
+    if(!updating) return;
+
+    this.entities.forEach((entity) => {
+      entity.update(dt);
+    });
+
+    let players = this.getEntitiesByType('player');
+    let goals = this.getEntitiesByType('goal');
+    let deadly = this.getEntitiesByType('deadly');
+
+    goals.forEach((entity) => {
+      let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
+      if(player){
+        this.removeEntity(entity);
+      }
+    });
+
+    deadly.forEach((entity) => {
+      let player = players.find((p)=>p.x == entity.x && p.y == entity.y)
+      if(player){
+        this.removeEntity(player);
+      }
+    });
+
+    if (goals.length <= this.min_goals){
+      this.next();
+      return;
+    }
+
+    if (players.length <= this.min_players){
+      this.reset();
+      return;
+    }
+  }
+}
+</script>
+    <script>DEFAULT_RULE_SET = {
+  air: " ",
+  controls: "platformer",
+  default_char: " ",
+  default_type: "solid",
+  goal: "?",
+  deadly: "^",
+  max_height: "30",
+  max_width: "80",
+  player: "@",
+  solid: "",
+  title: "untitled",
+  win_on_first_goal: false,
+  lose_on_first_death: false,
+  braking: 1,
+  gravity: 0.6,
+  jump_force: 1,
+  move_force: 1,
+  jump_time: 0.2,
+  coyote_time: 0.2,
+  jump_buffer_time: 0.2,
+  fg_color:"#e0e0e0",
+  fg2_color:"#808080",
+  bg_color:"#202020",
+  bg2_color:"#000000",
+};
+
+DEFAULT_GAME = ``;
+</script>
+    <script>class Game {
+
+  static INTERVAL_TIME = 1000/25
+  // Create an empty Game.
+  constructor(ruleSet, localization) {
+    this.ruleSet = ruleSet;
+    this.localization = localization;
+    this.scenes = [];
+    this.currentSceneIndex = 0;
+
+    this.size = V(0,0);
+    this.camera = V(0,0);
+
+    this.keys = [];
+  }
+
+  // Create a Game from an XML DOM Object.
+  static fromXML(xmlDoc) {
+    const errorNode = xmlDoc.querySelector('parsererror');
+    if (errorNode) throw new ParserError(errorNode.textContent);
+
+    // Get the game element
+    const gameElement = xmlDoc.documentElement
+    let gameElementLocalization = moteSchema.tags.game.localization
+    
+    // Deduce the location from the game element
+    let localization = Object.keys(gameElementLocalization).find(k=>gameElementLocalization[k]==gameElement.tagName);
+    
+    if (!localization) throw new DocumentNodeTagError(gameElement.tagName, localization);
+
+    // Create the game
+    let ruleSet = Game.ruleSetFromElement(gameElement, localization);
+    let game = new Game(ruleSet, localization);
+    if (gameElement.children.length == 0){
+      game.addLevel({}, gameElement.textContent)
+    }
+    for (let scene of gameElement.children) {
+      let sceneType = Object.keys(moteSchema.tags).find(k=>moteSchema.tags[k].localization[localization]==scene.tagName);
+      if(sceneType == 'level'){
+        let ruleSet = Game.ruleSetFromElement(scene, localization);
+        game.addLevel(ruleSet, scene.textContent)
+      }
+      else if(sceneType == 'screen'){
+        let ruleSet = Game.ruleSetFromElement(scene, localization);
+        game.addScreen(ruleSet, scene.textContent)
+      }
+      else{
+        throw new SceneTagError(scene.tagName, localization);
+      }
+    }
+    return game;
+  }
+
+  // Create a Game from the URL of a XML document.
+  static fromURL(url) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("GET", url, false);
+    xhttp.send(null);
+    const xmlDoc = xhttp.responseXML;
+    return Game.fromXML(xmlDoc);
+  }
+
+  // Create a Game from a XML string.
+  static fromText(text) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(text, "application/xml");
+    return Game.fromXML(xmlDoc);
+  }
+
+  // Return a ruleset as an object from a Dom element reading its attributes.
+  static ruleSetFromElement(element, localization){
+    const createRule = ({name, value}) => {
+      for (const rule in moteSchema.rules) {
+        if(moteSchema.rules[rule].localization[localization] != name) continue;
+        if(!moteSchema.rules[rule].validation.test(value)){
+          throw new RuleValueError(rule, value, localization);
+        }
+        let processedValue = moteSchema.rules[rule].validation.process(value);
+        if(name=='player')console.log(rule, value, processedValue)
+        return {[rule]: processedValue}
+      }
+      throw new RuleNameError(name, localization);
+    }
+    let attributesArray = Array.from(element.attributes, createRule)
+    return Object.assign({}, ...attributesArray)
+  }
+
+  // Add a scene to the game.
+  addScene(scene) {
+    this.scenes.push(scene)
+  }
+
+  // Add a screen to the game.
+  addScreen(ruleSet, text) {
+    this.addScene(new ScreenScene(this, ruleSet, text))
+  }
+
+  // Add a level to the game.
+  addLevel(ruleSet, text) {
+    this.addScene(new LevelScene(this, ruleSet, text))
+  }
+
+  // Return the scene at the given index or the current scene if index is ommited.
+  getScene(index){
+    if(index===undefined) index = this.currentSceneIndex;
+    return this.scenes[index];
+  }
+
+  nextScene(){
+    this.currentSceneIndex = (this.currentSceneIndex+1)%this.scenes.length;
+    this.getScene().init();
+  }
+
+  resetScene(){
+    this.getScene().init();
+  }
+
+  // Get the rule value for the given name.
+  getRule(name){
+    // Search rule in current scene ruleSet.
+    if(this.getScene().ruleSet[name] !== undefined){
+      return this.getScene().ruleSet[name];
+    }
+    // Search rule in game ruleSet.
+    if(this.ruleSet[name] !== undefined){
+      return this.ruleSet[name];
+    }
+    // Search rule in default ruleSet.
+    return moteSchema.rules[name].validation.process(moteSchema.rules[name].default)
+  }
+
+  // Return the current state of the game as a DOM Element.
+  toHTML (){
+    // Create the header element.
+    let header = document.createElement('header');
+    if (this.getRule('title')) {
+      let el = document.createElement('div');
+      el.innerHTML = this.getRule('title');
+      el.id = 'title';
+      header.appendChild(el);
+    }
+    if (this.getRule('author')) {
+      let el = document.createElement('div');
+      el.innerHTML = this.getRule('author');
+      el.id = 'author';
+      header.appendChild(el);
+    }
+    // Create the main element (containing the current scene).
+    let main = document.createElement('main');
+    main.appendChild(this.getScene().toHTML());
+
+    // Create the game element.
+    let game = document.createElement('div');
+    game.id = 'game'
+    game.dataset.localization = this.localization;
+    game.appendChild(header);
+    game.appendChild(main);
+    return game;
+  }
+
+  // Store keys on keydown.
+  _onKeyDown(e){
+    if (!this.keys.includes(e.key)){
+      this.keys.push(e.key);
+    }
+    if(["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown", " "].includes(e.key)) {
+      e.preventDefault();
+    }
+  }
+
+  // Remove stored keys on keyup
+  _onKeyUp(e){
+    if (this.keys.includes(e.key)){
+      this.keys.splice(this.keys.indexOf(event.key), 1);
+    }
+  }
+
+  // Initialize the game.
+  init(container){
+    // store container element
+    this.container = container;
+    this.container.innerHTML = '...'
+
+    // Register keyboard events
+    this.onKeyDown = this._onKeyDown.bind(this);
+    this.onKeyUp = this._onKeyUp.bind(this);
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
+
+    // Register interval
+    this.interval = setInterval(()=>{this.update()}, Game.INTERVAL_TIME)
+
+    // Load first scene
+    this.currentSceneIndex = 0;
+    this.getScene().init();
+  }
+
+  close(){
+    // Remove keyboard events
+    document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('keyup', this.onKeyUp);
+
+    // Clear interval
+    clearInterval(this.interval)
+  }
+
+  // update the game
+  update(){
+    let dt = (Game.INTERVAL_TIME)/1000
+
+    let scene = this.getScene()
+    
+    // Update scene
+    scene.input(this.keys);
+    scene.update(dt)
+
+    // Update html
+    let html = this.toHTML();
+    if (!this.container.firstChild.isEqualNode(html)) {
+      this.container.firstChild.replaceWith(html);
+    }
+  }
+}
+</script>
+    <script>
+    GAMEDATA=`<game
+title ="mote game jam"
+deadly="~"
+player="@"
+goal="*"
+>
+      
+
+@
+[English below]
+
+
+
+                 -&gt; Clique moi pour lire ce texte dans mote &lt;-
+
+
+   ------------------------------------------
+  | Créer un jeu avec le moteur de jeu mote. |
+   ------------------------------------------
+
+
+ --------------------------------------------------- 
+| CONTEXTE                                          |
+ --------------------------------------------------- 
+| Cette Jam est hébergée dans le cadre d'un atelier |
+| donné par Léon Lenclos sur invitation du Nîmes    |
+| Open Game Art (NOGA). Cependant la jam est        |
+| ouverte à tout le monde, pas besoin de participer |
+| aux ateliers pour participer à la jam !           |
+|                                                   |
+| La Jam dure une semaine mais la durée conseillée  |
+| pour créer un jeu est : une petite journée.       |
+ --------------------------------------------------- 
+
+
+     --------------------------------------------------- 
+    | THÈME                                             |
+     --------------------------------------------------- 
+    | Cette semaine, La terre voit naître le huit       |
+    | milliardième être humain, bienvenue.              |
+    |                                                   |
+    | Le thème de la Jam est :                          |
+    |                                                   |
+    |         8 000 000 000 d'êtres humains             |
+     --------------------------------------------------- 
+
+
+  --------------------------------------------------- 
+ | RÈGLES                                            |
+  --------------------------------------------------- 
+ | * N'importe qui peut participer.                  |
+ | * On peut participer seul ou en groupe.           |
+ | * Les jeux doivent être créés avec mote.          |
+ | * Les jeux ne sont pas notés.                     |
+ | * On peut poster plusieurs jeux.                  |
+  --------------------------------------------------- 
+
+
+
+     --------------------------------------------------- 
+    | MOTE                                              |
+     --------------------------------------------------- 
+    | mote est un moteur de jeu en mode texte, conçu    |
+    | pour être simple à prendre en main. C'est un      |
+    | outil bilingue, il est utilisable en anglais ou   |
+    | en français.                                      |
+    |                                                   |
+    | Une bonne porte d'entrée est le tutoriel :        |
+    | leonlenclos.github.io/mote/doc/tuto-fr.html       |
+    | inutile de le lire en entier !                    |
+    |                                                   |
+    | L'outil se trouve à cette adresse :               |
+    | leonlenclos.github.io/mote                        |
+    |                                                   |
+    | Quelques conseils :                               |
+    | * Une fois terminés, mote vous propose d'exporter |
+    |   votre jeu sous la forme d'un fichier html que   |
+    |   vous devriez pouvoir simplement importer        |
+    |   dans itch.io                                    |
+    | * mote peut être utilisé de différente manière :  |
+    |   ASCII art, poésie, simple platformer. Essaye de |
+    |   t'approprier l'outil pour en faire ce que       |
+    |   tu aimes.                                       |
+    | * mote est un moteur de jeu tout frais, si tu as  |
+    |   des questions ou si tu rencontres des bugs      |
+    |   n'hésite pas à nous en faire part dans la       |
+    |   section community de la jam !                   |
+     ---------------------------------------------------
+
+
+
+         -&gt; Click me to read this text in mote &lt;-
+
+
+       ------------------------------------------
+      | Create a game with the mote game engine. |
+       ------------------------------------------
+
+
+         --------------------------------------------------- 
+        | CONTEXT                                           |
+         --------------------------------------------------- 
+        | This Jam is hosted as part of a workshop given by |
+        | Léon Lenclos on invitation of the Nîmes Open Game |
+        | Art (NOGA). However the jam is open to everyone,  |
+        | no need to participate in the workshops to        |
+        | participate in the jam.                           |
+        |                                                   |
+        | The Jam lasts one week but the recommended time   |
+        | to create a game is: a short day.                 |
+         --------------------------------------------------- 
+
+   --------------------------------------------------- 
+  | THEME                                             |
+   --------------------------------------------------- 
+  | This week, the earth sees the birth of the eight  |
+  | billionth human being, welcome.                   |
+  |                                                   |
+  | The theme of the Jam is:                          |
+  |                                                   |
+  |           8 000 000 000 human beings              |
+  |                                                   |
+   --------------------------------------------------- 
+
+
+      --------------------------------------------------- 
+     | RÈGLES                                            |
+      --------------------------------------------------- 
+     | * Anyone can participate.                         |
+     | * You can participate alone or in a team.         |
+     | * Games must be created with mote.                |
+     | * Games are not ranked.                           |
+     | * You can post several games.                     |
+      --------------------------------------------------- 
+
+
+
+ --------------------------------------------------- 
+| MOTE                                              |
+ --------------------------------------------------- 
+| mote is a text-based game engine, designed to be  |
+| easy to use. It is a bilingual tool, it can be    |
+| used in English or in French.                     |
+|                                                   |
+| A good entry point is the tutorial:               |
+| leonlenclos.github.io/mote/doc/tuto-en.html       |
+| No need to read it all!                           |
+|                                                   |
+| The tool can be found at this address:            |
+| leonlenclos.github.io/mote/                       |
+|                                                   |
+| Some advice:                                      |
+| * Once finished, mote proposes to export your     |
+|   game as an html file that you should be able to |
+|   simply import in itch.io                        |
+| * mote can be used in different ways : ASCII art, |
+|   poetry, simple platformer. Try to make it your  |
+|   own and do what you like with it.               |
+| * mote is a fresh game engine, if you have any    |
+|   questions or if you encounter bugs don't        |
+|   hesitate to tell us in the community section of |
+|   the jam!                                        |
+ ---------------------------------------------------
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</game>`;
+    window.addEventListener('load', function(event){
+      let game = Game.fromText(GAMEDATA);
+      let container = document.getElementById('mote');
+      game.init(container);
+    });
+  </script>
+  </head>
+  <body>
+    <div id="mote">
+    </div>
+  
+
+</body></html>
