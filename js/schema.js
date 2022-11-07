@@ -172,7 +172,7 @@ moteSchema.validations = {
     },
     color:{
         process:(value)=>value,
-        test:(value)=>value.mach(/^#[0-9A-F]{6}$/i),
+        test:(value)=>value.match(/^#[0-9A-F]{6}$/i),
         description:{
             en:"Must be a hexadecimal color code.",
             fr:"Doit être un code couleur hexadécimal.",
