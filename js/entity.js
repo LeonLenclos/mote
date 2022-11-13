@@ -32,9 +32,12 @@ class Entity {
 
   toHTML(){
     let node = document.createElement('span');
-    node.innerHTML = this.char;
-    // let node = document.createTextNode(this.char);
+    node.textContent = this.char;
     return node;
+  }
+
+  toText(){
+    return this.char;
   }
 
   update(dt){
@@ -73,9 +76,8 @@ class Player extends Entity {
 
 
   toHTML(){
-    let node = document.createElement('span');
+    let node = super.toHTML()
     node.classList.add('player');
-    node.innerHTML = this.char;
     return node;
   }
   jump() {
@@ -189,7 +191,6 @@ class Player extends Entity {
           }
         }
       }
-      console.log(nearestFreePos, pos)
       pos = nearestFreePos
     }
 

@@ -16,6 +16,7 @@ class Scene {
     this.text = lines.join("\n");
   }
 
+
   toHTML(){
     let container = document.createElement('pre');
     container.id = 'scene';
@@ -177,14 +178,18 @@ class LevelScene extends Scene{
     // append grid to container
     let from = this.camera;
     let to = this.camera.add(displaySize);
+    let txt = '';
     for (let y = from.y; y < to.y; y++) {
       for (let x = from.x; x < to.x; x++) {
         if(contentGrid[x] && contentGrid[x][y] instanceof Entity){
-          container.appendChild(contentGrid[x][y].toHTML());
+          txt += contentGrid[x][y].toText();
+          // container.appendChild(contentGrid[x][y].toHTML());
         }
       }
-      container.appendChild(document.createTextNode('\n'));
+      txt += '\n';
+      // container.appendChild(document.createTextNode('\n'));
     }
+    container.textContent = txt;
   }
 
   init(){
