@@ -34,8 +34,7 @@ class Scene {
 
     // Style
     const colors = ['bg', 'bg2', 'fg', 'fg2'];
-    console.log(this.game.container)
-    colors.forEach(c=>{
+    colors.forEach(c=>{ 
       this.game.container.style.setProperty(`--${c}`, this.game.getRule(`${c}_color`));
     })
   }
@@ -141,7 +140,9 @@ class LevelScene extends Scene{
 
     // If entity is player also add a default char behind.
     if (entity.type == 'player' || entity.type == 'goal') {
-      this.addEntity(airChar, x, y);
+      if(airChar != char){
+        this.addEntity(airChar, x, y);
+      }
     }
   }
 

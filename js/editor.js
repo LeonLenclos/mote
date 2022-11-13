@@ -5,7 +5,7 @@ const app = createApp({
     return {
       localization:'en',
       supportedLanguages:['en', 'fr'],
-      code:DEFAULT_GAME,
+      code:Cookies.get('code') || '',
       currentMode: 'code',
       errorMessage:undefined,
     }
@@ -21,12 +21,16 @@ const app = createApp({
     },
     switchMode(mode){
       this.errorMessage = '';
-      console.log(`Mode: ${mode}`)
       this.currentMode=mode;
+      this.localSave();
       if(document.activeElement) document.activeElement.blur();
     },
     changecode(value){
       this.code = value;
+      this.localSave();
+    },
+    localSave(){
+      Cookies.set('code', this.code)
     },
     error(e) {
       this.currentMode = 'code';
@@ -41,6 +45,7 @@ const app = createApp({
     },
     exportXML(){
       exportXML(this.code, 'mote')
+      this.localSave();
     }
   }
 })
@@ -121,10 +126,10 @@ app.component('editor', {
     this.editor.setOption("showInvisibles", this.showInvisibles);
     this.editor.setOption("showPrintMargin", false);
     this.editor.setOption("displayIndentGuides", false);
-
     this.editor.setBehavioursEnabled(false);
     this.editor.setTheme("ace/theme/chrome");
-    this.editor.setValue(this.code);
+    this.editor.setValue(this.code, -1);
+    this.editor.session.setTabSize(1);
     this.editor.session.on('change', ()=>{
       let value = this.editor.getValue()
       this.$emit('changecode', value)

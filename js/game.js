@@ -76,7 +76,6 @@ class Game {
           throw new RuleValueError(rule, value, localization);
         }
         let processedValue = moteSchema.rules[rule].validation.process(value);
-        if(name=='player')console.log(rule, value, processedValue)
         return {[rule]: processedValue}
       }
       throw new RuleNameError(name, localization);
@@ -171,7 +170,7 @@ class Game {
   // Remove stored keys on keyup
   _onKeyUp(e){
     if (this.keys.includes(e.key)){
-      this.keys.splice(this.keys.indexOf(event.key), 1);
+      this.keys.splice(this.keys.indexOf(e.key), 1);
     }
   }
 

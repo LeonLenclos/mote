@@ -12,7 +12,6 @@ class Entity {
     const entityTypes = ['player', 'air', 'deadly', 'solid', 'goal'];
     let entityType = scene.game.getRule('default_type');
     for (let type of entityTypes) {
-      console.log(type, scene.game.getRule(type))
       if (scene.game.getRule(type).includes(char)) {
         entityType = type;
         break;
